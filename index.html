@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculette Amiante SS4 — Prescription EPI, vacations et VLEP</title>
+<style>
+  :root{
+    --rouge:#C0392B; --rouge-d:#96271B; --rouge-l:#FDECEA;
+    --alerte:#CC0000; --orange:#E69138; --vert:#38761D;
+    --alerte-l:#F8D7D7; --orange-l:#FDF2E4; --vert-l:#EAF3E4;
+    --alerte-t:#8F0000; --orange-t:#8A5410; --vert-t:#2A5A15;
+    --encre:#1A1A1A; --gris-t:#6B6B6B; --gris:#F7F7F7;
+    --blanc:#FFF; --trait:#E3E3E3; --r:6px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--gris);color:var(--encre);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .page{max-width:1180px;margin:0 auto;padding:0 18px 56px}
+
+  .band{background:var(--rouge);color:#fff;margin:0 0 22px;padding:22px 18px}
+  .band .inner{max-width:1144px;margin:0 auto}
+  .band .kicker{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.85}
+  .band h1{margin:6px 0 4px;font-size:clamp(21px,3.4vw,30px);font-weight:800;letter-spacing:-.01em;line-height:1.15}
+  .band p{margin:0;font-size:14px;opacity:.94;max-width:80ch}
+  .band .ref{margin-top:10px;font-size:11.5px;opacity:.8;letter-spacing:.03em}
+
+  .card{background:var(--blanc);border:1px solid var(--trait);border-radius:var(--r);margin-bottom:16px;overflow:hidden}
+  .card-h{display:flex;align-items:center;gap:11px;padding:14px 18px;border-bottom:1px solid var(--trait);background:#FCFCFC}
+  .idx{flex:0 0 26px;height:26px;border-radius:50%;background:var(--rouge);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .card-h h2{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .card-h .hint{margin-left:auto;font-size:12px;color:var(--gris-t);text-align:right}
+  .card-b{padding:18px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:900px){.grid4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  @media(max-width:520px){.grid4{grid-template-columns:1fr}}
+
+  .field{margin-bottom:0}
+  label{display:block;font-size:12px;font-weight:600;color:var(--gris-t);margin-bottom:5px}
+  input[type=text],input[type=number],input[type=date]{width:100%;font-family:inherit;font-size:14.5px;
+    color:var(--encre);background:var(--blanc);border:1px solid var(--trait);border-radius:4px;padding:9px 10px}
+  input.num{font-variant-numeric:tabular-nums;text-align:right;font-weight:600}
+  input:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 3px var(--rouge-l)}
+  input.miss{border-color:var(--orange);background:var(--orange-l)}
+  .aside{font-size:12.5px;color:var(--gris-t);margin-top:8px;line-height:1.5}
+
+  /* réglette */
+  .lvlwrap{display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;margin-bottom:24px}
+  .lvlin{flex:1 1 320px;min-width:260px}
+  .medal{flex:0 0 210px;border-radius:var(--r);padding:16px 18px;color:#fff;text-align:center;
+    display:flex;flex-direction:column;justify-content:center}
+  .medal i{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:7px}
+  .medal b{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .medal s{text-decoration:none;font-size:12.5px;font-weight:600;opacity:.94;margin-top:6px;font-variant-numeric:tabular-nums}
+  .m1{background:var(--vert)} .m2{background:var(--orange)} .m3{background:var(--alerte)} .m0{background:#5A5A5A}
+  input[type=range]{width:100%;accent-color:var(--rouge);margin-top:12px}
+  .rulerscroll{overflow-x:auto;padding-top:2px}
+  .rulerbox{position:relative;padding-top:36px;min-width:640px}
+  .cursor{position:absolute;top:0;transform:translateX(-50%);transition:left .25s ease;text-align:center;white-space:nowrap;pointer-events:none}
+  .cursor b{display:inline-block;background:var(--encre);color:#fff;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px;font-variant-numeric:tabular-nums}
+  .cursor i{display:block;width:0;height:0;margin:3px auto 0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid var(--encre)}
+  .bands,.lvlbar{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .bandbtn{border:2px solid transparent;border-radius:4px 4px 0 0;padding:11px 4px;cursor:pointer;font-family:inherit;
+    font-size:12px;font-weight:700;line-height:1.25;text-align:center;font-variant-numeric:tabular-nums;transition:transform .15s}
+  .bandbtn small{display:block;font-size:10px;font-weight:600;opacity:.7;margin-top:3px}
+  .bandbtn:hover{transform:translateY(-2px)}
+  .b1{background:var(--vert-l);color:var(--vert-t)} .b2{background:var(--orange-l);color:var(--orange-t)} .b3{background:var(--alerte-l);color:var(--alerte-t)}
+  .bandbtn.on{border-color:var(--encre);color:#fff}
+  .bandbtn.on.b1{background:var(--vert)} .bandbtn.on.b2{background:var(--orange)} .bandbtn.on.b3{background:var(--alerte)}
+  .lvlbar div{border-radius:0 0 4px 4px;height:23px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:.11em;color:#fff}
+  .g1{background:var(--vert)} .g2{background:var(--orange)} .g3{background:var(--alerte)}
+
+  /* KPI */
+  .kpi{border:1px solid var(--trait);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;background:#FCFCFC}
+  .kpi:last-child{margin-bottom:0}
+  .kpi-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .kpi-name{font-size:14px;font-weight:700}
+  .kpi-name small{display:block;font-size:11.5px;font-weight:400;color:var(--gris-t);margin-top:2px}
+  .kpi-val{font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+  .kpi-val small{font-size:14px;font-weight:500;color:var(--gris-t)}
+  .kpi-formula{margin-top:9px;font-size:12px;color:var(--gris-t)}
+  .kpi-formula code{background:var(--gris);border:1px solid var(--trait);border-radius:3px;padding:1px 5px;font-size:11.5px}
+  .badge{display:inline-block;margin-top:10px;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:20px}
+  .badge.good{background:var(--vert-l);color:var(--vert-t)}
+  .badge.warn{background:var(--orange-l);color:var(--orange-t)}
+  .badge.bad{background:var(--alerte-l);color:var(--alerte-t)}
+  .badge.neutral{background:var(--gris);color:var(--gris-t)}
+
+  .gate{border-radius:var(--r);padding:15px 18px;margin-bottom:14px;color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;gap:11px}
+  .gate .dot{width:11px;height:11px;border-radius:50%;background:#fff;flex:0 0 11px}
+  .gate.pass{background:var(--vert)} .gate.fail{background:var(--alerte)}
+  .msg{border-left:4px solid;border-radius:4px;padding:11px 14px;margin-bottom:9px;font-size:13.5px;line-height:1.5}
+  .msg b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+  .msg.good{background:var(--vert-l);border-color:var(--vert);color:var(--vert-t)}
+  .msg.warn{background:var(--orange-l);border-color:var(--orange);color:var(--orange-t)}
+  .msg.bad{background:var(--alerte-l);border-color:var(--alerte);color:var(--alerte-t)}
+  .msg.info{background:var(--gris);border-color:var(--gris-t);color:var(--encre)}
+
+  /* matrice */
+  .mscroll{overflow-x:auto}
+  table.mx{border-collapse:separate;border-spacing:3px;width:100%;min-width:900px}
+  table.mx th{font-size:11px;font-weight:600;color:var(--gris-t);text-align:center;vertical-align:bottom;padding:0 3px 7px;line-height:1.3}
+  table.mx th.lab{text-align:left;width:150px;min-width:150px}
+  table.mx th input{font-size:11.5px;padding:4px;margin-top:5px;text-align:center;font-weight:700}
+  td.band-c{font-size:12px;font-weight:700;background:var(--gris);border-radius:4px;padding:9px 10px;white-space:nowrap;border-left:3px solid transparent;font-variant-numeric:tabular-nums}
+  td.band-c s{text-decoration:none;display:block;font-size:10.5px;font-weight:500;color:var(--gris-t)}
+  tr.active td.band-c{background:var(--rouge);color:#fff;border-left-color:var(--rouge-d)}
+  tr.active td.band-c s{color:rgba(255,255,255,.82)}
+  tr:not(.active) .cell{opacity:.38}
+  .cell{width:100%;min-height:54px;border:2px solid transparent;border-radius:4px;font-family:inherit;font-size:11.5px;font-weight:700;
+    padding:7px 5px;cursor:pointer;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+  .cell u{text-decoration:none;font-weight:500;font-size:10px;opacity:.9}
+  .c-ok{background:var(--vert-l);color:var(--vert-t)} .c-cond{background:var(--orange-l);color:var(--orange-t)}
+  .c-non{background:var(--alerte-l);color:var(--alerte-t)} .c-int{background:#F0F0F0;color:var(--alerte)}
+  .c-np{background:#F0F0F0;color:var(--gris-t);font-weight:500}
+  tr.active .cell.sel{border-color:var(--encre)}
+  .mlegend{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;font-size:11.5px;font-weight:600}
+  .mlegend span{padding:4px 10px;border-radius:20px}
+
+  /* journée + vacations */
+  .trackWrap{position:relative;margin-bottom:6px}
+  .track{display:flex;height:56px;width:100%;background:repeating-linear-gradient(90deg,#EDEDED 0 1px,transparent 1px 100%);
+    border:1px solid var(--trait);border-radius:4px;overflow:hidden}
+  .vgrp{display:flex;position:relative;border-right:3px solid var(--blanc)}
+  .vgrp:last-of-type{border-right:none}
+  .vgrp .vtag{position:absolute;top:2px;left:3px;font-size:9.5px;font-weight:800;color:#fff;opacity:.9;letter-spacing:.06em;z-index:2}
+  .seg{position:relative;transition:width .3s ease,background .3s;min-width:0}
+  .seg span{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;
+    font-size:11px;font-weight:700;color:#fff;overflow:hidden;white-space:nowrap}
+  .seg.rest{background:transparent} .seg.rest span{color:var(--gris-t);font-weight:500;align-items:center;padding:0}
+  .capmk{position:absolute;top:0;bottom:0;border-right:2px dashed var(--alerte);pointer-events:none}
+  .capmk b{position:absolute;top:3px;left:5px;font-size:10.5px;font-weight:700;color:var(--alerte);white-space:nowrap}
+  .ruler{display:flex;justify-content:space-between;font-size:11px;color:var(--gris-t);margin-bottom:18px}
+
+  .vac{border:1px solid var(--trait);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+  .vac-h{display:flex;align-items:center;gap:10px;padding:10px 13px;background:#FAFAFA;border-bottom:1px solid var(--trait);flex-wrap:wrap}
+  .vac-h .vn{font-size:13.5px;font-weight:700}
+  .vac-h .vt{font-size:12.5px;color:var(--gris-t);font-variant-numeric:tabular-nums}
+  .vac-h .badge{margin:0}
+  .vac-h .del{margin-left:auto}
+  .vac-b{padding:10px 13px 13px}
+  table.ph{width:100%;border-collapse:collapse}
+  table.ph th{font-size:11.5px;font-weight:600;color:var(--gris-t);text-align:left;padding:0 7px 6px;border-bottom:1px solid var(--trait);white-space:nowrap}
+  table.ph th.n,table.ph td.n{text-align:right}
+  table.ph td{padding:4px 7px;border-bottom:1px solid #F2F2F2}
+  .del{background:none;border:none;color:#C9C9C9;cursor:pointer;font-size:19px;line-height:1;padding:3px 7px;border-radius:4px}
+  .del:hover{color:var(--alerte);background:var(--alerte-l)}
+  .btn{font-family:inherit;font-size:13px;font-weight:700;background:var(--rouge);color:#fff;border:none;border-radius:4px;padding:10px 18px;cursor:pointer}
+  .btn:hover{background:var(--rouge-d)}
+  .btn.ghost{background:var(--blanc);color:var(--rouge);border:1px solid var(--trait)}
+  .btn.ghost:hover{background:var(--rouge-l);border-color:var(--rouge)}
+  .btn.sm{font-size:12px;padding:7px 13px}
+  .btn:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
+  .btnrow{margin-top:14px;display:flex;gap:9px;flex-wrap:wrap}
+
+  details{border-bottom:1px solid var(--trait)} details:last-child{border-bottom:none}
+  summary{cursor:pointer;padding:12px 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  .tag{background:var(--rouge);color:#fff;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:3px;letter-spacing:.04em}
+  .chev{margin-left:auto;color:var(--rouge);font-size:19px;transition:transform .2s}
+  details[open] .chev{transform:rotate(90deg)}
+  .def-body{padding:0 0 14px;font-size:13.5px;line-height:1.6;color:#3A3A3A}
+  .def-body ul{margin:7px 0;padding-left:20px} .def-body li{margin-bottom:5px}
+  .fx{background:var(--gris);border:1px solid var(--trait);border-left:3px solid var(--rouge);border-radius:4px;
+    padding:10px 13px;margin:9px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+
+  .stamp{font-size:12px;color:var(--gris-t);margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait)}
+  footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--trait);font-size:11.5px;color:var(--gris-t);line-height:1.8}
+  .printonly{display:none}
+
+  @page{size:A4 portrait;margin:11mm}
+  @media print{
+    body{background:#fff;font-size:11.5px}
+    .band{margin:0 0 10px;padding:12px}
+    .band p{display:none}
+    .btnrow,.del,input[type=range],.card-h .hint{display:none!important}
+    .printonly{display:block}
+    .card{break-inside:avoid;border-color:#BBB}
+    .vac,.kpi{break-inside:avoid}
+    details{break-inside:avoid} details:not([open]) .def-body{display:none}
+    tr:not(.active) .cell{opacity:.5}
+    input{border-color:#CCC!important;box-shadow:none!important}
+    .bandbtn:hover{transform:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="band"><div class="inner">
+  <div class="kicker">Réseau ATTILA — Service QHSE</div>
+  <h1>Fiche de calcul Amiante SS4 — Prescription EPI, vacations et VLEP</h1>
+  <p>La matrice de l'arrêté du 7 mars 2013 fixe ce qui est prescrit, conditionné, non adapté ou interdit. Elle décide. Le calcul d'exposition ne fait que vérifier : il ne rattrape jamais un équipement interdit.</p>
+  <div class="ref">QHSE-CALC-SS4 · v5.0 · Arrêté du 7 mars 2013 · R.4412-98 · R.4412-100 · R.4412-110 · R.4412-118 · R.4412-119</div>
+</div></div>
+
+<div class="page">
+
+  <section class="card">
+    <div class="card-h"><div class="idx">1</div><h2>Identification de la fiche</h2>
+      <div class="hint">Sans référence de mesurage, le calcul n'est pas opposable</div></div>
+    <div class="card-b">
+      <div class="grid4" style="margin-bottom:14px">
+        <div class="field"><label for="fAgence">Agence</label><input type="text" id="fAgence" placeholder="ATTILA …"></div>
+        <div class="field"><label for="fChantier">Chantier / affaire</label><input type="text" id="fChantier" placeholder="Référence affaire"></div>
+        <div class="field"><label for="fDate">Date d'intervention</label><input type="date" id="fDate"></div>
+        <div class="field"><label for="fProc">Processus</label><input type="text" id="fProc" placeholder="FP01 — …"></div>
+      </div>
+      <div class="grid4">
+        <div class="field"><label for="fOrg">Organisme accrédité COFRAC</label><input type="text" id="fOrg" placeholder="Nom de l'organisme"></div>
+        <div class="field"><label for="fRap">Référence du rapport de mesurage</label><input type="text" id="fRap" placeholder="N° de rapport"></div>
+        <div class="field"><label for="fRapD">Date du rapport</label><input type="date" id="fRapD"></div>
+        <div class="field"><label for="fRed">Rédacteur</label><input type="text" id="fRed" placeholder="Nom et fonction"></div>
+      </div>
+      <div class="aside" id="idState"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">2</div><h2>Empoussièrement du processus</h2>
+      <div class="hint">Valeur issue du rapport de l'organisme accrédité</div></div>
+    <div class="card-b">
+      <div class="lvlwrap">
+        <div class="lvlin">
+          <label for="pic">Concentration mesurée (f/L)</label>
+          <input type="number" class="num" id="pic" min="0" step="10" value="45">
+          <input type="range" id="picRange" min="0" max="700" step="1" value="45" aria-label="Curseur d'empoussièrement">
+          <div class="aside">Mesurage sur opérateur, à l'extérieur de l'appareil respiratoire. C'est cette valeur qui classe le processus, pas l'exposition inhalée.</div>
+        </div>
+        <div class="medal" id="medal"></div>
+      </div>
+      <div class="rulerscroll"><div class="rulerbox">
+        <div class="cursor" id="cursor"><b id="cursorVal">45 f/L</b><i></i></div>
+        <div class="bands" id="bands"></div>
+        <div class="lvlbar">
+          <div class="g1" style="grid-column:span 1">NIVEAU 1</div>
+          <div class="g2" style="grid-column:span 4">NIVEAU 2</div>
+          <div class="g3" style="grid-column:span 2">NIVEAU 3</div>
+        </div>
+      </div></div>
+      <div class="aside" style="margin-top:12px">Sept bandes de prescription pour trois niveaux : à l'intérieur du niveau 2, l'équipement prescrit change quatre fois. Cliquez une bande pour vous y positionner.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">3</div><h2>Équipements prescrits par l'arrêté</h2>
+      <div class="hint">Cliquez la case du moyen retenu · FPA modifiables</div></div>
+    <div class="card-b">
+      <div class="mscroll"><table class="mx"><thead><tr id="mxHead"></tr></thead><tbody id="mxBody"></tbody></table></div>
+      <div class="mlegend">
+        <span class="c-ok">Adapté</span><span class="c-cond">Adapté sous condition de durée</span>
+        <span class="c-non">Non adapté</span><span class="c-int">Interdit</span><span class="c-np">Non prescrit</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">4</div><h2>Vacations et journée de référence</h2>
+      <div class="hint" id="dayState">— min sur 480</div></div>
+    <div class="card-b">
+      <div class="trackWrap">
+        <div class="track" id="track"></div>
+        <div class="capmk" id="capMark" style="display:none"><b></b></div>
+      </div>
+      <div class="ruler"><span>0 h</span><span>2 h</span><span>4 h</span><span>6 h</span><span>8 h</span></div>
+      <div id="vacs"></div>
+      <div class="btnrow">
+        <button class="btn" id="addVac">+ Ajouter une vacation</button>
+        <button class="btn ghost" id="print">Exporter la fiche en PDF</button>
+      </div>
+      <div class="aside" style="margin-top:12px">Une vacation est une période de port ininterrompu de l'appareil respiratoire. L'habillage, le déshabillage et la décontamination en font partie : saisissez-les comme des phases de la vacation, pas à côté.</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="card-h"><div class="idx">5</div><h2>Décision</h2><div class="hint">La prescription d'abord</div></div>
+      <div class="card-b">
+        <div class="gate" id="gate"><span class="dot"></span><span id="gateTxt"></span></div>
+        <div id="msgs"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><div class="idx">6</div><h2>Vérification arithmétique</h2><div class="hint">Subordonnée à la prescription</div></div>
+      <div class="card-b">
+        <div class="kpi">
+          <div class="kpi-top">
+            <div class="kpi-name">Exposition inhalée<small>Moyenne sur 8 h · limite 10 f/L</small></div>
+            <div class="kpi-val" id="rInh">—</div>
+          </div>
+          <div class="kpi-formula">Σ(C<sub>i</sub> × t<sub>i</sub>) <code>/ 480 min</code> <code>÷ FPA</code></div>
+          <div class="badge neutral" id="vlepBadge">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top">
+            <div class="kpi-name">C ambiante pondérée<small>Avant prise en compte de l'appareil</small></div>
+            <div class="kpi-val" id="rAmb">—</div>
+          </div>
+          <div class="aside">Temps en zone : <b id="rZone">—</b> réparti en <b id="rNvac">—</b> · Moyen retenu : <b id="rApr">—</b> · FPA : <b id="rFpa">—</b></div>
+        </div>
+        <div class="stamp" id="stamp"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">i</div><h2>La méthode, au goût ATTILA</h2></div>
+    <div class="card-b" style="padding-top:4px">
+
+      <details open>
+        <summary><span class="tag">RÈGLE</span> Pourquoi la matrice prime sur le calcul <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>La tentation naturelle est de calculer son exposition, de constater qu'elle passe sous 10 f/L et d'en conclure que l'équipement convient. C'est une erreur de raisonnement.</p>
+          <p>L'arrêté du 7 mars 2013 fixe des <strong>prescriptions minimales par niveau d'empoussièrement</strong>. Ces prescriptions intègrent déjà l'arithmétique de la VLEP, avec des facteurs de protection et des plafonds horaires calibrés. Un demi-masque P3 à 150 f/L est <strong>interdit</strong> : aucun calcul favorable ne rend cette configuration recevable.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">VACATIONS</span> Ce qui compte dans une vacation <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>Une vacation est une période de <strong>port ininterrompu de l'appareil de protection respiratoire</strong>. L'habillage, le déshabillage et la décontamination se font appareil sur le visage : ils sont <strong>dans</strong> la vacation, pas en dehors.</p>
+          <div class="fx">Durée d'une vacation ≤ 2 h 30 &nbsp;·&nbsp; Durée quotidienne cumulée ≤ 6 h — art. R.4412-119</div>
+          <p>C'est <strong>l'employeur</strong> qui fixe la durée de chaque vacation, leur nombre quotidien et les temps d'habillage et de décontamination, après avis du médecin du travail et du CSE (art. R.4412-118). Ces durées figurent dans le mode opératoire. L'encadrant de chantier les <strong>applique et les trace</strong> : il ne les détermine pas sur site.</p>
+          <p>Conséquence pratique : une journée de 5 h en zone n'est jamais conforme en une seule vacation. Il faut la découper, et le découpage doit être écrit avant le chantier.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">BANDES</span> Sept bandes, pas trois niveaux <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>Les trois niveaux de l'article R.4412-98 classent le processus. Ils ne suffisent pas à choisir l'EPI : à l'intérieur du niveau 2, la prescription change quatre fois.</p>
+          <ul>
+            <li><strong>0 à &lt; 100 f/L</strong> — niveau 1</li>
+            <li><strong>100 à &lt; 800</strong> · <strong>800 à &lt; 2 400</strong> · <strong>2 400 à &lt; 3 300</strong> · <strong>3 300 à &lt; 6 000</strong> — niveau 2</li>
+            <li><strong>6 000 à &lt; 10 000</strong> · <strong>10 000 à &lt; 25 000</strong> — niveau 3</li>
+          </ul>
+          <p>Au-delà de 25 000 f/L, l'intervention sort du champ de la sous-section 4.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">FFP3</span> Le plafond de 15 minutes <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>L'arrêté porte le FFP3 en vert, « adapté mais limité à 15 min/jour et à la sous-section 4 ». Ce « mais » est une condition de durée : le FFP3 est donc affiché ici en <strong>conditionnel</strong>, pas en adapté.</p>
+          <p><strong>Aucune intervention de couverture ne tient dans 15 minutes de temps en zone</strong>, décontamination comprise. Au-delà, il n'existe aucun arbitrage : ni découpage en vacations, ni calcul d'exposition. Il faut changer d'appareil.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">DURÉES</span> Interdit, non adapté, plafonné <span class="chev">›</span></summary>
+        <div class="def-body">
+          <ul>
+            <li><strong>Interdit</strong> — prohibition réglementaire. Rien ne la lève.</li>
+            <li><strong>Non adapté</strong> — inadéquation technique, y compris en réduisant la durée d'exposition.</li>
+            <li><strong>Adapté sous condition</strong> — admis dans la limite d'une durée quotidienne, à tracer dans le mode opératoire.</li>
+            <li><strong>Non prescrit</strong> — non exigé à ce niveau. L'employer n'est pas fautif, simplement inutile.</li>
+          </ul>
+          <p>Sur la bande 3 300 – 6 000 f/L, l'employeur qui n'adapte pas la durée de travail met la tenue étanche ventilée à disposition pour garantir le respect de la VLEP (art. R.4412-110 et art. 3 de l'arrêté).</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">FPA</span> Facteurs de protection assignés <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>Les FPA sont modifiables dans l'en-tête de la matrice et ne servent qu'à la carte 6. Les valeurs par défaut sont des ordres de grandeur reconstitués à partir des plafonds horaires de l'arrêté : <strong>à recaler sur vos notices fabricant avant diffusion réseau.</strong></p>
+          <p>Le crédit de protection n'est acquis que si l'appareil est correctement choisi, ajusté (essai d'ajustement) et porté sans interruption. La tenue étanche ventilée ne se caractérise pas par un FPA simple : le calcul est neutralisé pour elle.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="tag">SOURCE</span> Ce que cette fiche ne fait pas <span class="chev">›</span></summary>
+        <div class="def-body">
+          <p>Elle ne remplace ni le mesurage ni la stratégie d'échantillonnage, qui relèvent d'un organisme accrédité COFRAC pour les trois volets — stratégie, prélèvement et analyse — au titre de l'arrêté du 14 août 2012 modifié.</p>
+          <p>Les concentrations saisies doivent provenir du rapport final de cet organisme, dont la référence est reportée en carte 1. La fiche est à joindre au mode opératoire et au dossier chantier.</p>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const EPI=[
+  {id:"ffp3",n:"FFP3",fpa:10},
+  {id:"p3",n:"Demi-masque ou masque complet à filtre P3",fpa:30},
+  {id:"tm2p",n:"TM2P — VA demi-masque",fpa:20},
+  {id:"th3p",n:"TH3P — VA cagoule ou casque",fpa:40},
+  {id:"tm3p",n:"TM3P — VA masque complet",fpa:60},
+  {id:"aa",n:"Adduction d'air (AA)",fpa:250},
+  {id:"tev",n:"Tenue étanche ventilée",fpa:null}
+];
+const OK="ok",CO="cond",NA="non",IN="int",NP="np";
+const BANDES=[
+  {min:0,max:100,niv:1,lib:"0 à < 100",c:{ffp3:{s:CO,cap:15,u:"15 min/jour max<br>SS4 uniquement"},p3:{s:OK},tm2p:{s:OK},th3p:{s:OK},tm3p:{s:OK},aa:{s:NP},tev:{s:NP}}},
+  {min:100,max:800,niv:2,lib:"100 à < 800",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:OK},aa:{s:OK},tev:{s:NP}}},
+  {min:800,max:2400,niv:2,lib:"800 à < 2 400",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:CO,cap:120,u:"2 h/jour max"},aa:{s:OK},tev:{s:NP}}},
+  {min:2400,max:3300,niv:2,lib:"2 400 à < 3 300",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:NA},aa:{s:OK},tev:{s:NP}}},
+  {min:3300,max:6000,niv:2,lib:"3 300 à < 6 000",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:NA},aa:{s:CO,cap:180,u:"3 h/jour max"},tev:{s:OK,u:"art. R.4412-110"}}},
+  {min:6000,max:10000,niv:3,lib:"6 000 à < 10 000",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:IN},aa:{s:CO,cap:120,u:"2 h/jour max"},tev:{s:OK}}},
+  {min:10000,max:25000,niv:3,lib:"10 000 à < 25 000",c:{ffp3:{s:IN},p3:{s:IN},tm2p:{s:IN},th3p:{s:IN},tm3p:{s:IN},aa:{s:NA},tev:{s:OK}}}
+];
+const LIB={ok:"Adapté",cond:"Adapté<br>sous condition",non:"Non adapté",int:"Interdit",np:"Non prescrit"};
+const CLS={ok:"c-ok",cond:"c-cond",non:"c-non",int:"c-int",np:"c-np"};
+const VAC_MAX=150, JOUR_MAX=360;
+
+let pic=45, sel="p3";
+let vacs=[
+  {phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Dépose plaques fibrociment",c:45,t:105},{n:"Décontamination et sortie",c:5,t:20}]},
+  {phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Dépose plaques fibrociment",c:45,t:75},{n:"Ensachage des déchets",c:15,t:30},{n:"Décontamination et sortie",c:5,t:20}]}
+];
+
+const $=id=>document.getElementById(id);
+const fr=(v,d=2)=>v.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const hm=m=>m>=60?Math.floor(m/60)+" h "+String(m%60).padStart(2,'0'):m+" min";
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const bandeDe=v=>BANDES.find(b=>v>=b.min&&v<b.max)||null;
+const allPhases=()=>vacs.flatMap(v=>v.phases);
+const vacT=v=>v.phases.reduce((s,p)=>s+p.t,0);
+function segColor(c){
+  const k=Math.max(0,Math.min(1,Math.log10(Math.max(c,1))/2));
+  const a=[192,57,43],b=[120,0,0];
+  return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;
+}
+function syncPic(){
+  const ps=allPhases();
+  if(!ps.length){vacs.push({phases:[{n:"Travail en zone",c:pic,t:120}]}); return;}
+  let best=-1,ref=null;
+  ps.forEach(p=>{if(p.c>best){best=p.c; ref=p}});
+  if(ref) ref.c=pic;
+}
+
+/* ---- carte 1 : identification ---- */
+const IDF=["fAgence","fChantier","fDate","fProc","fOrg","fRap","fRapD","fRed"];
+const IDREQ=["fAgence","fChantier","fDate","fOrg","fRap"];
+function idState(){
+  const manquants=IDREQ.filter(k=>!$(k).value.trim());
+  IDF.forEach(k=>$(k).classList.toggle("miss", IDREQ.includes(k)&&!$(k).value.trim()));
+  const el=$("idState");
+  if(manquants.length){
+    el.innerHTML=`<span style="color:var(--orange-t);font-weight:600">Fiche incomplète — ${manquants.length} champ(s) d'identification manquant(s).</span> Un calcul de VLEP sans agence, chantier, date, organisme accrédité et référence de rapport n'est pas opposable en contrôle.`;
+  } else {
+    el.innerHTML=`<span style="color:var(--vert-t);font-weight:600">Fiche identifiée.</span> Elle peut être jointe au mode opératoire et au dossier chantier.`;
+  }
+  return manquants.length;
+}
+IDF.forEach(k=>$(k).addEventListener("input",()=>{idState(); stamp()}));
+
+function stamp(){
+  const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
+  const g=(k,d)=>$(k).value.trim()||d;
+  $("stamp").innerHTML=`Fiche éditée le ${now} · Agence ${g("fAgence","—")} · Chantier ${g("fChantier","—")} · Processus ${g("fProc","—")}<br>`+
+    `Rapport de mesurage ${g("fRap","—")} — ${g("fOrg","organisme non renseigné")} · Rédacteur ${g("fRed","—")}`;
+  $("foot").innerHTML=`QHSE-CALC-SS4 · v5.0 · Service QHSE — Réseau ATTILA · édité le ${now}<br>`+
+    `Matrice EPI de l'arrêté du 7 mars 2013, à jour au 23/07/2026 — à revoir en veille réglementaire · Niveaux R.4412-98 · VLEP 10 f/L sur 8 h R.4412-100 · Adaptation des durées R.4412-110 · Vacations R.4412-118 et R.4412-119`;
+}
+
+/* ---- carte 2 : réglette ---- */
+function picToSlider(v){const B=bandeDe(v); if(!B) return 700; return Math.round((BANDES.indexOf(B)+(v-B.min)/(B.max-B.min))*100)}
+function sliderToPic(s){const pos=s/100,i=Math.min(6,Math.floor(pos)),f=pos-i,b=BANDES[i]; return Math.round(b.min+f*(b.max-b.min))}
+function buildBand(){
+  const B=bandeDe(pic), wrap=$("bands"); wrap.innerHTML="";
+  BANDES.forEach(b=>{
+    const on=!!(B&&b.min===B.min), btn=document.createElement("button");
+    btn.className=`bandbtn b${b.niv}${on?" on":""}`; btn.setAttribute("aria-pressed",on);
+    btn.innerHTML=`${b.lib.replace(" à < "," – ")}<small>f/L</small>`;
+    btn.addEventListener("click",()=>{pic=b.min===0?45:b.min; $("pic").value=pic; syncPic(); render()});
+    wrap.appendChild(btn);
+  });
+  let pos=7; if(B){pos=BANDES.indexOf(B)+(pic-B.min)/(B.max-B.min)}
+  $("cursor").style.left=(pos/7*100)+"%";
+  $("cursorVal").textContent=fr(pic,0)+" f/L";
+  $("picRange").value=picToSlider(pic);
+  const m=$("medal");
+  if(B){m.className="medal m"+B.niv; m.innerHTML=`<i>Classement du processus</i><b>Niveau ${B.niv}</b><s>${B.lib} f/L</s>`}
+  else {m.className="medal m0"; m.innerHTML=`<i>Classement du processus</i><b>Hors SS4</b><s>Au-delà de 25 000 f/L</s>`}
+}
+$("pic").addEventListener("input",e=>{pic=Math.max(0,+e.target.value||0); syncPic(); render()});
+$("picRange").addEventListener("input",e=>{pic=sliderToPic(+e.target.value); $("pic").value=pic; syncPic(); render()});
+
+/* ---- carte 3 : matrice ---- */
+function buildMatrix(){
+  $("mxHead").innerHTML=`<th class="lab">Empoussièrement</th>`+EPI.map((e,i)=>
+    `<th>${e.n}${e.fpa!==null?`<input type="number" class="num" min="1" step="1" value="${e.fpa}" data-i="${i}" aria-label="FPA ${esc(e.n)}">`:`<div style="margin-top:9px;font-size:10.5px">FPA n/a</div>`}</th>`).join("");
+  $("mxHead").querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("input",e=>{EPI[+e.target.dataset.i].fpa=Math.max(1,+e.target.value||1); compute()});
+    inp.addEventListener("click",e=>e.stopPropagation());
+  });
+  const B=bandeDe(pic), tb=$("mxBody"); tb.innerHTML="";
+  BANDES.forEach(b=>{
+    const tr=document.createElement("tr");
+    if(B&&b.min===B.min) tr.className="active";
+    tr.innerHTML=`<td class="band-c">${b.lib} f/L<s>Niveau ${b.niv}</s></td>`+
+      EPI.map(e=>{const c=b.c[e.id],on=(B&&b.min===B.min&&sel===e.id)?" sel":"";
+        return `<td><button class="cell ${CLS[c.s]}${on}" data-e="${e.id}" data-b="${b.min}">${LIB[c.s]}${c.u?`<u>${c.u}</u>`:""}</button></td>`}).join("");
+    tr.querySelectorAll(".cell").forEach(btn=>btn.addEventListener("click",()=>{
+      const bm=+btn.dataset.b;
+      if(!B||bm!==B.min){const nb=BANDES.find(x=>x.min===bm); pic=nb.min===0?45:nb.min; $("pic").value=pic; syncPic()}
+      sel=btn.dataset.e; render();
+    }));
+    tb.appendChild(tr);
+  });
+}
+
+/* ---- carte 4 : vacations ---- */
+function buildVacs(){
+  const box=$("vacs"); box.innerHTML="";
+  vacs.forEach((v,vi)=>{
+    const t=vacT(v), over=t>VAC_MAX;
+    const d=document.createElement("div"); d.className="vac";
+    d.innerHTML=
+      `<div class="vac-h">
+         <span class="vn">Vacation ${vi+1}</span>
+         <span class="vt">${hm(t)} / 2 h 30</span>
+         <span class="badge ${over?'bad':'good'}">${over?`Dépassement de ${hm(t-VAC_MAX)}`:'Durée conforme'}</span>
+         <button class="del" aria-label="Supprimer la vacation ${vi+1}">×</button>
+       </div>
+       <div class="vac-b">
+         <table class="ph"><thead><tr>
+           <th style="width:48%">Phase (habillage et décontamination inclus)</th>
+           <th class="n" style="width:23%">Concentration f/L</th>
+           <th class="n" style="width:21%">Durée min</th><th style="width:8%"></th>
+         </tr></thead><tbody></tbody></table>
+         <div class="btnrow" style="margin-top:10px"><button class="btn sm ghost">+ Phase</button></div>
+       </div>`;
+    const tb=d.querySelector("tbody");
+    v.phases.forEach((p,pi)=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td><input type="text" value="${esc(p.n)}" placeholder="Libellé de la phase"></td>`+
+        `<td class="n"><input type="number" class="num" min="0" step="1" value="${p.c}"></td>`+
+        `<td class="n"><input type="number" class="num" min="0" step="5" value="${p.t}"></td>`+
+        `<td class="n"><button class="del" aria-label="Supprimer la phase">×</button></td>`;
+      const [nn,cc,tt]=tr.querySelectorAll("input");
+      nn.addEventListener("input",e=>{p.n=e.target.value});
+      cc.addEventListener("input",e=>{p.c=Math.max(0,+e.target.value||0); buildVacs(); compute()});
+      tt.addEventListener("input",e=>{p.t=Math.max(0,+e.target.value||0); buildVacs(); compute()});
+      tr.querySelector(".del").addEventListener("click",()=>{v.phases.splice(pi,1); buildVacs(); compute()});
+      tb.appendChild(tr);
+    });
+    d.querySelector(".vac-h .del").addEventListener("click",()=>{vacs.splice(vi,1); buildVacs(); compute()});
+    d.querySelector(".vac-b .btn").addEventListener("click",()=>{
+      v.phases.push({n:"",c:0,t:0}); buildVacs(); compute();
+      const ins=box.querySelectorAll(".vac")[vi].querySelectorAll('input[type=text]');
+      ins[ins.length-1].focus();
+    });
+    box.appendChild(d);
+  });
+}
+$("addVac").addEventListener("click",()=>{
+  vacs.push({phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Travail en zone",c:pic,t:90},{n:"Décontamination et sortie",c:5,t:20}]});
+  buildVacs(); compute();
+});
+$("print").addEventListener("click",()=>{stamp(); window.print()});
+
+/* ---- calcul ---- */
+function compute(){
+  const B=bandeDe(pic), E=EPI.find(e=>e.id===sel), st=B?B.c[sel]:null;
+  const ps=allPhases();
+  const totalT=ps.reduce((s,p)=>s+p.t,0);
+  const zoneT=vacs.reduce((s,v)=>s+vacT(v),0);
+  const camb=ps.reduce((s,p)=>s+p.c*p.t,0)/480;
+  const picPh=ps.reduce((m,p)=>Math.max(m,p.c),0);
+  const fpa=E.fpa, cinh=fpa?camb/fpa:null;
+
+  /* piste groupée par vacation */
+  const tr=$("track"); tr.innerHTML=""; const base=Math.max(480,totalT);
+  vacs.forEach((v,vi)=>{
+    const t=vacT(v); if(!t) return;
+    const g=document.createElement("div"); g.className="vgrp"; g.style.width=(t/base*100)+"%";
+    g.innerHTML=`<span class="vtag">V${vi+1}</span>`;
+    v.phases.forEach(p=>{
+      if(!p.t) return;
+      const d=document.createElement("div"); d.className="seg";
+      d.style.width=(p.t/t*100)+"%"; d.style.background=segColor(p.c);
+      d.title=`Vacation ${vi+1} — ${p.n||"Phase"} — ${p.c} f/L pendant ${p.t} min`;
+      d.innerHTML=`<span>${p.t>=45?p.c+" f/L":""}</span>`;
+      g.appendChild(d);
+    });
+    tr.appendChild(g);
+  });
+  if(totalT<480){
+    const d=document.createElement("div"); d.className="seg rest";
+    d.style.width=((480-totalT)/base*100)+"%";
+    d.innerHTML=`<span>${480-totalT>=40?"hors zone":""}</span>`;
+    tr.appendChild(d);
+  }
+  $("dayState").textContent=`${zoneT} min en zone sur 480 · ${vacs.length} vacation${vacs.length>1?"s":""}`;
+
+  const cm=$("capMark");
+  if(st&&st.cap){cm.style.display="block"; cm.style.left=(st.cap/base*100)+"%";
+    cm.querySelector("b").textContent=`plafond ${hm(st.cap)}`} else cm.style.display="none";
+
+  $("rZone").textContent=zoneT?hm(zoneT):"—";
+  $("rNvac").textContent=`${vacs.length} vacation${vacs.length>1?"s":""}`;
+  $("rApr").textContent=E.n;
+  $("rFpa").textContent=fpa?fpa:"n/a";
+  $("rAmb").innerHTML=fr(camb)+' <small>f/L</small>';
+  $("rInh").innerHTML=fpa?(fr(cinh)+' <small>f/L</small>'):'<small>non applicable</small>';
+
+  const M=$("msgs"); M.innerHTML=""; let bloque=false;
+  const put=(cls,b,t)=>{const d=document.createElement("div"); d.className="msg "+cls; d.innerHTML=`<b>${b}</b>${t}`; M.appendChild(d)};
+
+  if(!B){bloque=true;
+    put("bad","Hors sous-section 4",`${fr(pic,0)} f/L dépasse 25 000 f/L. L'intervention ne relève plus de la sous-section 4.`);
+  } else if(st.s==="int"){bloque=true;
+    put("bad","Équipement interdit",`« ${E.n} » est interdit sur la bande ${B.lib} f/L. Aucun calcul d'exposition ne peut lever cette interdiction : changez d'équipement.`);
+  } else if(st.s==="non"){bloque=true;
+    put("bad","Équipement non adapté",`« ${E.n} » est non adapté sur la bande ${B.lib} f/L, y compris en réduisant la durée d'exposition.`);
+  } else if(st.s==="cond"){
+    if(zoneT>st.cap){bloque=true;
+      if(st.cap<=15) put("bad","Intervention impossible avec cet équipement",
+        `Le FFP3 est plafonné à ${hm(st.cap)} par jour. Vous êtes à ${hm(zoneT)} en zone. Au-delà de ${st.cap} minutes il n'y a aucun arbitrage : ni découpage en vacations, ni calcul d'exposition. Il faut changer d'appareil.`);
+      else put("bad","Plafond de l'arrêté dépassé",
+        `« ${E.n} » n'est admis sur cette bande que dans la limite de ${hm(st.cap)} par jour, toutes vacations confondues. Vous êtes à ${hm(zoneT)}.`);
+    } else put("warn","Admis sous condition de durée",
+      `« ${E.n} » est admis sur cette bande dans la limite de ${hm(st.cap)} par jour. ${hm(zoneT)} en zone : condition tenue, à tracer dans le mode opératoire.`);
+    if(B.min===3300) put("info","Alternative réglementaire",
+      "Si la durée de travail n'est pas adaptée sur la bande 3 300 – 6 000 f/L, la tenue étanche ventilée doit être mise à disposition (R.4412-110, art. 3 de l'arrêté).");
+  } else if(st.s==="np"){
+    put("info","Non prescrit à ce niveau",`« ${E.n} » n'est pas exigé sur la bande ${B.lib} f/L. Son emploi n'est pas fautif, mais un équipement prescrit suffit.`);
+  } else {
+    put("good","Équipement adapté",`« ${E.n} » est adapté sur la bande ${B.lib} f/L.`+(st.u?` Réserve : ${st.u}.`:""));
+  }
+
+  /* vacations */
+  const longues=vacs.map((v,i)=>({i:i+1,t:vacT(v)})).filter(o=>o.t>VAC_MAX);
+  if(longues.length){bloque=true;
+    put("bad","Vacation trop longue",
+      `${longues.map(o=>`Vacation ${o.i} : ${hm(o.t)}`).join(" · ")}. La durée d'une vacation ne peut excéder 2 h 30 (art. R.4412-119). Découpez en vacations supplémentaires — l'habillage et la décontamination comptent dans chacune.`);
+  }
+  if(zoneT>JOUR_MAX){bloque=true;
+    put("bad","Durée quotidienne dépassée",`${hm(zoneT)} en zone pour un plafond de 6 h par jour (art. R.4412-119). Reportez une partie de l'intervention sur un autre jour.`);
+  } else if(zoneT>JOUR_MAX-30 && zoneT<=JOUR_MAX){
+    put("warn","Journée proche du plafond",`${hm(zoneT)} en zone pour un maximum de 6 h. Il reste ${hm(JOUR_MAX-zoneT)} de marge : tout imprévu fait basculer la journée en non-conformité.`);
+  }
+
+  let incoh=false;
+  if(B&&picPh>0&&(picPh<B.min||picPh>=B.max)){
+    incoh=true; bloque=true;
+    const nb=bandeDe(picPh);
+    put("bad","Journée incohérente avec le processus",
+      nb?`Le pic des phases (${fr(picPh,0)} f/L) relève de la bande ${nb.lib} f/L, pas de la bande ${B.lib} f/L déclarée en carte 2. Tant que les deux divergent, le calcul d'exposition ne veut rien dire : alignez la carte 2 sur le pic réel, ou corrigez la phase concernée.`
+        :`Le pic des phases (${fr(picPh,0)} f/L) sort du champ de la sous-section 4.`);
+  }
+  if(totalT>480) put("warn","Journée incohérente",`${totalT} min saisies pour une journée de référence de 480 min.`);
+
+  const manquants=idState();
+  if(manquants) put("warn","Fiche non opposable",
+    `${manquants} champ(s) d'identification manquant(s) en carte 1. Le calcul est juste, mais une fiche sans agence, chantier, date, organisme accrédité ni référence de rapport ne vaut rien en contrôle.`);
+
+  if(fpa&&camb>0&&cinh>10&&!bloque) put("warn","Divergence à expliquer",
+    "L'arrêté admet cet équipement mais le calcul dépasse 10 f/L. Le FPA saisi est probablement inférieur à celui retenu par l'arrêté : recalez-le sur la notice fabricant avant de conclure.");
+
+  const vb=$("vlepBadge");
+  const marge=(fpa&&cinh>0)?(10/cinh):0;
+  const mtxt=marge>20?"×20 et plus":"×"+fr(marge,1);
+  if(!fpa){vb.className="badge neutral"; vb.textContent="Calcul neutralisé — la prescription fait foi"}
+  else if(camb===0){vb.className="badge warn"; vb.textContent="Aucune donnée saisie"}
+  else if(incoh){vb.className="badge bad"; vb.textContent="Calcul suspendu — journée incohérente"}
+  else if(bloque){vb.className="badge neutral"; vb.textContent="Sans objet — configuration non recevable"}
+  else if(cinh>10){vb.className="badge bad"; vb.textContent="Au-dessus de la VLEP"}
+  else if(cinh>5){vb.className="badge warn"; vb.textContent=`Sous la VLEP — marge ${mtxt} seulement`}
+  else {vb.className="badge good"; vb.textContent=`Sous la VLEP — marge ${mtxt}`}
+
+  $("gate").className="gate "+(bloque?"fail":"pass");
+  $("gateTxt").textContent=bloque?"Configuration non recevable":"Configuration recevable";
+  stamp();
+}
+
+function render(){buildBand(); buildMatrix(); buildVacs(); compute()}
+$("fDate").valueAsDate=new Date();
+render();
+</script>
+</body>
+</html>
