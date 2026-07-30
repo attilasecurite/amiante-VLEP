@@ -122,6 +122,26 @@
   .mlegend{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;font-size:11.5px;font-weight:600}
   .mlegend span{padding:4px 10px;border-radius:20px}
 
+  /* module thermique */
+  .thermo{border:1px solid var(--trait);border-radius:var(--r);padding:14px 16px;margin-bottom:18px;background:#FCFCFC}
+  .thermo-in{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px}
+  .tf{flex:1 1 300px}
+  .tf label{margin-bottom:8px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-family:inherit;font-size:13px;font-weight:700;padding:8px 13px;border-radius:20px;cursor:pointer;
+    border:1.5px solid var(--trait);background:var(--blanc);color:var(--gris-t);transition:all .12s}
+  .chip small{display:block;font-size:10px;font-weight:500;opacity:.75}
+  .chip:hover{border-color:var(--rouge)}
+  .chip.on{background:var(--rouge);border-color:var(--rouge);color:#fff}
+  .chip:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
+  .thermo-out{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid var(--trait)}
+  .tout-b{display:flex;flex-direction:column;gap:2px}
+  .tout-b i{font-style:normal;font-size:11px;font-weight:600;color:var(--gris-t);text-transform:uppercase;letter-spacing:.05em}
+  .tout-b b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+  .tout-sep{width:1px;align-self:stretch;background:var(--trait)}
+  .tout-note{flex:1 1 240px;font-size:12.5px;line-height:1.5;color:var(--gris-t)}
+  .tout-note b{color:var(--encre)}
+
   /* journée + vacations */
   .trackWrap{position:relative;margin-bottom:6px}
   .track{display:flex;height:56px;width:100%;background:repeating-linear-gradient(90deg,#EDEDED 0 1px,transparent 1px 100%);
@@ -169,6 +189,45 @@
   .fx{background:var(--gris);border:1px solid var(--trait);border-left:3px solid var(--rouge);border-radius:4px;
     padding:10px 13px;margin:9px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
 
+  /* ---- frise interactive ---- */
+  .planhead{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  .pf{flex:1 1 150px} .pf label{margin-bottom:5px}
+  input[type=time]{width:100%;font-family:inherit;font-size:14.5px;border:1px solid var(--trait);border-radius:4px;padding:8px 10px}
+  input[type=time]:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 3px var(--rouge-l)}
+
+  .frisescroll{overflow-x:auto;padding-bottom:2px}
+  .frise{position:relative;height:96px;min-width:660px;background:var(--gris);
+    border:1px solid var(--trait);border-radius:var(--r);overflow:hidden;user-select:none}
+  .blk{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;overflow:hidden;transition:left .05s linear,width .05s linear;border-right:1px solid rgba(255,255,255,.55)}
+  .blk b{font-size:11.5px;font-weight:800;line-height:1;text-align:center;padding:0 4px}
+  .blk s{text-decoration:none;font-size:10px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.9}
+  .blk.hab{background:#D7DCE3;color:#33404F}
+  .blk.desh{background:#C4CBD4;color:#33404F}
+  .blk.vac{color:#fff;cursor:ew-resize}
+  .blk.vac.over{background:repeating-linear-gradient(45deg,var(--alerte) 0 8px,#9E0000 8px 16px)!important}
+  .blk.pause{background:repeating-linear-gradient(135deg,#EFE7D2 0 7px,#E7DCC0 7px 14px);color:#7A6318}
+  .blk.lunch{background:#EAF0E4;color:var(--vert-t)}
+  .blk .grip{position:absolute;right:0;top:0;bottom:0;width:12px;cursor:ew-resize;background:rgba(0,0,0,.14)}
+  .blk .grip::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:2px;height:26px;border-left:2px dotted rgba(255,255,255,.85);border-right:2px dotted rgba(255,255,255,.85);padding-left:2px}
+  .blk.vac.tooslim b,.blk.vac.tooslim s{display:none}
+
+  .axis{position:relative;height:20px;min-width:660px;margin-top:3px}
+  .axis span{position:absolute;transform:translateX(-50%);font-size:10.5px;color:var(--gris-t);font-variant-numeric:tabular-nums}
+  .axis span i{display:block;width:1px;height:5px;background:var(--trait);margin:0 auto 2px}
+
+  .vlist{margin-top:16px}
+  .vrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 12px;border:1px solid var(--trait);
+    border-radius:var(--r);margin-bottom:8px;background:#FCFCFC}
+  .vrow .vdot{width:12px;height:12px;border-radius:3px;flex:0 0 12px}
+  .vrow .vname{font-size:13.5px;font-weight:700;min-width:96px}
+  .vrow .vrange{font-size:12.5px;color:var(--gris-t);font-variant-numeric:tabular-nums}
+  .vrow .vdur{display:flex;align-items:center;gap:7px;margin-left:auto}
+  .vrow .vdur input{width:74px}
+  .vrow .badge{margin:0}
+  .vrow .del{margin-left:4px}
+
   .stamp{font-size:12px;color:var(--gris-t);margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait)}
   footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--trait);font-size:11.5px;color:var(--gris-t);line-height:1.8}
   .printonly{display:none}
@@ -181,7 +240,7 @@
     .btnrow,.del,input[type=range],.card-h .hint{display:none!important}
     .printonly{display:block}
     .card{break-inside:avoid;border-color:#BBB}
-    .vac,.kpi{break-inside:avoid}
+    .vrow,.kpi{break-inside:avoid}
     details{break-inside:avoid} details:not([open]) .def-body{display:none}
     tr:not(.active) .cell{opacity:.5}
     input{border-color:#CCC!important;box-shadow:none!important}
@@ -260,20 +319,40 @@
   </section>
 
   <section class="card">
-    <div class="card-h"><div class="idx">4</div><h2>Vacations et journée de référence</h2>
-      <div class="hint" id="dayState">— min sur 480</div></div>
+    <div class="card-h"><div class="idx">4</div><h2>Planning de la journée</h2>
+      <div class="hint" id="dayState">— min en zone</div></div>
     <div class="card-b">
-      <div class="trackWrap">
-        <div class="track" id="track"></div>
-        <div class="capmk" id="capMark" style="display:none"><b></b></div>
+      <div class="thermo">
+        <div class="thermo-in">
+          <div class="tf">
+            <label>Température de la zone</label>
+            <div class="chips" id="tempChips"></div>
+          </div>
+          <div class="tf">
+            <label>Intensité du travail</label>
+            <div class="chips" id="workChips"></div>
+          </div>
+        </div>
+        <div class="thermo-out" id="thermoOut"></div>
       </div>
-      <div class="ruler"><span>0 h</span><span>2 h</span><span>4 h</span><span>6 h</span><span>8 h</span></div>
-      <div id="vacs"></div>
+
+      <div class="planhead">
+        <div class="pf"><label for="startH">Début de journée</label><input type="time" id="startH" value="08:00"></div>
+        <div class="pf"><label for="habT">Habillage (min)</label><input type="number" class="num" id="habT" min="0" step="5" value="10"></div>
+        <div class="pf"><label for="deshT">Déshabillage (min)</label><input type="number" class="num" id="deshT" min="0" step="5" value="20"></div>
+        <div class="pf"><label for="lunchT">Pause déjeuner (min)</label><input type="number" class="num" id="lunchT" min="0" step="15" value="60"></div>
+      </div>
+
+      <div class="frisescroll"><div class="frise" id="frise"></div></div>
+      <div class="axis" id="axis"></div>
+
+      <div class="vlist" id="vlist"></div>
+
       <div class="btnrow">
         <button class="btn" id="addVac">+ Ajouter une vacation</button>
         <button class="btn ghost" id="print">Exporter la fiche en PDF</button>
       </div>
-      <div class="aside" style="margin-top:12px">Une vacation est une période de port ininterrompu de l'appareil respiratoire. L'habillage, le déshabillage et la décontamination en font partie : saisissez-les comme des phases de la vacation, pas à côté.</div>
+      <div class="aside" style="margin-top:12px">Tirez les poignées pour ajuster la durée de chaque vacation ; les pauses de récupération et le déjeuner se recalent automatiquement. Habillage et déshabillage bornent la journée. La concentration de chaque vacation reprend l'empoussièrement du processus (carte 2).</div>
     </div>
   </section>
 
@@ -327,6 +406,8 @@
           <p>Une vacation est une période de <strong>port ininterrompu de l'appareil de protection respiratoire</strong>. L'habillage, le déshabillage et la décontamination se font appareil sur le visage : ils sont <strong>dans</strong> la vacation, pas en dehors.</p>
           <div class="fx">Durée d'une vacation ≤ 2 h 30 &nbsp;·&nbsp; Durée quotidienne cumulée ≤ 6 h — art. R.4412-119</div>
           <p>C'est <strong>l'employeur</strong> qui fixe la durée de chaque vacation, leur nombre quotidien et les temps d'habillage et de décontamination, après avis du médecin du travail et du CSE (art. R.4412-118). Ces durées figurent dans le mode opératoire. L'encadrant de chantier les <strong>applique et les trace</strong> : il ne les détermine pas sur site.</p>
+          <p><strong>La contrainte thermique peut abaisser cette limite.</strong> Le document INRS/OPPBTP « Durée et nombre de vacations amiante » donne, selon la température de la zone et l'intensité du travail, une durée de vacation qui descend jusqu'à 13 min à 40 °C en travail soutenu — très en deçà des 2 h 30. Ces valeurs sont paramétrées en tête de la carte 4 ; l'outil retient toujours <strong>la plus contraignante des deux limites</strong>, et impose le temps de récupération correspondant entre deux vacations.</p>
+          <p>Ces durées thermiques sont données à titre indicatif par le document officiel et doivent être adaptées selon les individus et les chantiers.</p>
           <p>Conséquence pratique : une journée de 5 h en zone n'est jamais conforme en une seule vacation. Il faut la découper, et le découpage doit être écrit avant le chantier.</p>
         </div>
       </details>
@@ -411,30 +492,55 @@ const LIB={ok:"Adapté",cond:"Adapté<br>sous condition",non:"Non adapté",int:"
 const CLS={ok:"c-ok",cond:"c-cond",non:"c-non",int:"c-int",np:"c-np"};
 const VAC_MAX=150, JOUR_MAX=360;
 
-let pic=45, sel="p3";
-let vacs=[
-  {phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Dépose plaques fibrociment",c:45,t:105},{n:"Décontamination et sortie",c:5,t:20}]},
-  {phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Dépose plaques fibrociment",c:45,t:75},{n:"Ensachage des déchets",c:15,t:30},{n:"Décontamination et sortie",c:5,t:20}]}
+/* Grille température × intensité — doc INRS / OPPBTP «Durée et nombre de vacations amiante»
+   vac = durée max de vacation liée aux contraintes thermiques (min) ; recup = temps de récupération entre vacations (min).
+   Valeurs reportées à l'identique du document (dont l'irrégularité à 35 °C, signalée dans l'outil). */
+const THERMO=[
+  {t:20, mod:150, sout:90, recup:28, recupTxt:"25 à 30 min"},
+  {t:25, mod:130, sout:56, recup:28, recupTxt:"25 à 30 min"},
+  {t:30, mod:80,  sout:34, recup:45, recupTxt:"30 min à 1 h"},
+  {t:35, mod:29,  sout:21, recup:60, recupTxt:"1 heure"},
+  {t:40, mod:30,  sout:13, recup:60, recupTxt:"1 heure"}
 ];
+const WORK=[{id:"mod",n:"Modéré",w:"240 W"},{id:"sout",n:"Soutenu",w:"450 W"}];
+let tempSel=20, workSel="mod";
+function thermoRow(){return THERMO.find(r=>r.t===tempSel)||THERMO[0]}
+function thermoCap(){const r=thermoRow(); return workSel==="sout"?r.sout:r.mod}
+
+let pic=45, sel="p3";
+
+/* Modèle journée-frise :
+   - habT / deshT : habillage / déshabillage (min), bornent la journée, hors zone amiante
+   - lunchT : pause déjeuner (min), insérée après la vacation lunchAfter (1-based)
+   - vacs : durées de travail en zone (min), à la concentration pic ; pauses de récupération intercalées */
+let habT=10, deshT=20, lunchT=60, startMin=8*60, lunchAfter=1;
+let vacs=[105, 95];   // deux vacations par défaut
 
 const $=id=>document.getElementById(id);
 const fr=(v,d=2)=>v.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
-const hm=m=>m>=60?Math.floor(m/60)+" h "+String(m%60).padStart(2,'0'):m+" min";
+const hm=m=>{m=Math.round(m); return m>=60?Math.floor(m/60)+" h "+String(m%60).padStart(2,'0'):m+" min"};
+const hhmm=m=>{m=Math.round(m); return String(Math.floor(m/60)).padStart(2,'0')+":"+String(m%60).padStart(2,'0')};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 const bandeDe=v=>BANDES.find(b=>v>=b.min&&v<b.max)||null;
-const allPhases=()=>vacs.flatMap(v=>v.phases);
-const vacT=v=>v.phases.reduce((s,p)=>s+p.t,0);
+const zoneTotal=()=>vacs.reduce((s,t)=>s+t,0);
 function segColor(c){
   const k=Math.max(0,Math.min(1,Math.log10(Math.max(c,1))/2));
   const a=[192,57,43],b=[120,0,0];
   return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;
 }
-function syncPic(){
-  const ps=allPhases();
-  if(!ps.length){vacs.push({phases:[{n:"Travail en zone",c:pic,t:120}]}); return;}
-  let best=-1,ref=null;
-  ps.forEach(p=>{if(p.c>best){best=p.c; ref=p}});
-  if(ref) ref.c=pic;
+/* Construit la séquence ordonnée des blocs de la journée, avec minute de début absolue */
+function buildDay(){
+  const recup=thermoRow().recup;
+  const seq=[]; let cur=startMin;
+  const push=(type,label,dur,vi)=>{seq.push({type,label,dur,start:cur,vi}); cur+=dur;};
+  if(habT>0) push("hab","Habillage",habT);
+  vacs.forEach((t,i)=>{
+    push("vac",`Vacation ${i+1}`,t,i);
+    if(i===lunchAfter-1 && lunchT>0) push("lunch","Pause déjeuner",lunchT);
+    else if(i<vacs.length-1) push("pause","Récupération",recup);
+  });
+  if(deshT>0) push("desh","Déshabillage",deshT);
+  return {seq, end:cur};
 }
 
 /* ---- carte 1 : identification ---- */
@@ -456,10 +562,12 @@ IDF.forEach(k=>$(k).addEventListener("input",()=>{idState(); stamp()}));
 function stamp(){
   const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
   const g=(k,d)=>$(k).value.trim()||d;
+  const wlbl=workSel==="sout"?"soutenu (450 W)":"modéré (240 W)";
   $("stamp").innerHTML=`Fiche éditée le ${now} · Agence ${g("fAgence","—")} · Chantier ${g("fChantier","—")} · Processus ${g("fProc","—")}<br>`+
-    `Rapport de mesurage ${g("fRap","—")} — ${g("fOrg","organisme non renseigné")} · Rédacteur ${g("fRed","—")}`;
+    `Rapport de mesurage ${g("fRap","—")} — ${g("fOrg","organisme non renseigné")} · Rédacteur ${g("fRed","—")}<br>`+
+    `Conditions retenues : ${tempSel} °C, travail ${wlbl} · vacation max ${hm(effCap())} · récupération ${thermoRow().recupTxt}`;
   $("foot").innerHTML=`QHSE-CALC-SS4 · v5.0 · Service QHSE — Réseau ATTILA · édité le ${now}<br>`+
-    `Matrice EPI de l'arrêté du 7 mars 2013, à jour au 23/07/2026 — à revoir en veille réglementaire · Niveaux R.4412-98 · VLEP 10 f/L sur 8 h R.4412-100 · Adaptation des durées R.4412-110 · Vacations R.4412-118 et R.4412-119`;
+    `Matrice EPI de l'arrêté du 7 mars 2013, à jour au 23/07/2026 — à revoir en veille réglementaire · Durées de vacation : doc INRS/OPPBTP «Durée et nombre de vacations amiante» · Niveaux R.4412-98 · VLEP 10 f/L sur 8 h R.4412-100 · Adaptation des durées R.4412-110 · Vacations R.4412-118 et R.4412-119`;
 }
 
 /* ---- carte 2 : réglette ---- */
@@ -471,7 +579,7 @@ function buildBand(){
     const on=!!(B&&b.min===B.min), btn=document.createElement("button");
     btn.className=`bandbtn b${b.niv}${on?" on":""}`; btn.setAttribute("aria-pressed",on);
     btn.innerHTML=`${b.lib.replace(" à < "," – ")}<small>f/L</small>`;
-    btn.addEventListener("click",()=>{pic=b.min===0?45:b.min; $("pic").value=pic; syncPic(); render()});
+    btn.addEventListener("click",()=>{pic=b.min===0?45:b.min; $("pic").value=pic; render()});
     wrap.appendChild(btn);
   });
   let pos=7; if(B){pos=BANDES.indexOf(B)+(pic-B.min)/(B.max-B.min)}
@@ -482,8 +590,8 @@ function buildBand(){
   if(B){m.className="medal m"+B.niv; m.innerHTML=`<i>Classement du processus</i><b>Niveau ${B.niv}</b><s>${B.lib} f/L</s>`}
   else {m.className="medal m0"; m.innerHTML=`<i>Classement du processus</i><b>Hors SS4</b><s>Au-delà de 25 000 f/L</s>`}
 }
-$("pic").addEventListener("input",e=>{pic=Math.max(0,+e.target.value||0); syncPic(); render()});
-$("picRange").addEventListener("input",e=>{pic=sliderToPic(+e.target.value); $("pic").value=pic; syncPic(); render()});
+$("pic").addEventListener("input",e=>{pic=Math.max(0,+e.target.value||0); render()});
+$("picRange").addEventListener("input",e=>{pic=sliderToPic(+e.target.value); $("pic").value=pic; render()});
 
 /* ---- carte 3 : matrice ---- */
 function buildMatrix(){
@@ -502,100 +610,150 @@ function buildMatrix(){
         return `<td><button class="cell ${CLS[c.s]}${on}" data-e="${e.id}" data-b="${b.min}">${LIB[c.s]}${c.u?`<u>${c.u}</u>`:""}</button></td>`}).join("");
     tr.querySelectorAll(".cell").forEach(btn=>btn.addEventListener("click",()=>{
       const bm=+btn.dataset.b;
-      if(!B||bm!==B.min){const nb=BANDES.find(x=>x.min===bm); pic=nb.min===0?45:nb.min; $("pic").value=pic; syncPic()}
+      if(!B||bm!==B.min){const nb=BANDES.find(x=>x.min===bm); pic=nb.min===0?45:nb.min; $("pic").value=pic}
       sel=btn.dataset.e; render();
     }));
     tb.appendChild(tr);
   });
 }
 
-/* ---- carte 4 : vacations ---- */
-function buildVacs(){
-  const box=$("vacs"); box.innerHTML="";
-  vacs.forEach((v,vi)=>{
-    const t=vacT(v), over=t>VAC_MAX;
-    const d=document.createElement("div"); d.className="vac";
-    d.innerHTML=
-      `<div class="vac-h">
-         <span class="vn">Vacation ${vi+1}</span>
-         <span class="vt">${hm(t)} / 2 h 30</span>
-         <span class="badge ${over?'bad':'good'}">${over?`Dépassement de ${hm(t-VAC_MAX)}`:'Durée conforme'}</span>
-         <button class="del" aria-label="Supprimer la vacation ${vi+1}">×</button>
-       </div>
-       <div class="vac-b">
-         <table class="ph"><thead><tr>
-           <th style="width:48%">Phase (habillage et décontamination inclus)</th>
-           <th class="n" style="width:23%">Concentration f/L</th>
-           <th class="n" style="width:21%">Durée min</th><th style="width:8%"></th>
-         </tr></thead><tbody></tbody></table>
-         <div class="btnrow" style="margin-top:10px"><button class="btn sm ghost">+ Phase</button></div>
-       </div>`;
-    const tb=d.querySelector("tbody");
-    v.phases.forEach((p,pi)=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td><input type="text" value="${esc(p.n)}" placeholder="Libellé de la phase"></td>`+
-        `<td class="n"><input type="number" class="num" min="0" step="1" value="${p.c}"></td>`+
-        `<td class="n"><input type="number" class="num" min="0" step="5" value="${p.t}"></td>`+
-        `<td class="n"><button class="del" aria-label="Supprimer la phase">×</button></td>`;
-      const [nn,cc,tt]=tr.querySelectorAll("input");
-      nn.addEventListener("input",e=>{p.n=e.target.value});
-      cc.addEventListener("input",e=>{p.c=Math.max(0,+e.target.value||0); buildVacs(); compute()});
-      tt.addEventListener("input",e=>{p.t=Math.max(0,+e.target.value||0); buildVacs(); compute()});
-      tr.querySelector(".del").addEventListener("click",()=>{v.phases.splice(pi,1); buildVacs(); compute()});
-      tb.appendChild(tr);
+/* ---- carte 4 : module thermique ---- */
+function effCap(){ return Math.min(VAC_MAX, thermoCap()); }
+function buildThermo(){
+  const tc=$("tempChips"); tc.innerHTML="";
+  THERMO.forEach(r=>{
+    const b=document.createElement("button");
+    b.className="chip"+(r.t===tempSel?" on":""); b.type="button";
+    b.setAttribute("aria-pressed", r.t===tempSel);
+    b.innerHTML=`${r.t} °C`;
+    b.addEventListener("click",()=>{tempSel=r.t; render()});
+    tc.appendChild(b);
+  });
+  const wc=$("workChips"); wc.innerHTML="";
+  WORK.forEach(w=>{
+    const b=document.createElement("button");
+    b.className="chip"+(w.id===workSel?" on":""); b.type="button";
+    b.setAttribute("aria-pressed", w.id===workSel);
+    b.innerHTML=`${w.n}<small>${w.w}</small>`;
+    b.addEventListener("click",()=>{workSel=w.id; render()});
+    wc.appendChild(b);
+  });
+
+  const r=thermoRow(), tCap=thermoCap(), eff=effCap();
+  const thermoBinds = tCap<VAC_MAX;
+  const out=$("thermoOut");
+  out.innerHTML=
+    `<div class="tout-b"><i>Vacation max — thermique</i><b>${hm(tCap)}</b></div>`+
+    `<div class="tout-sep"></div>`+
+    `<div class="tout-b"><i>Plafond réglementaire</i><b>2 h 30</b></div>`+
+    `<div class="tout-sep"></div>`+
+    `<div class="tout-b" style="color:${thermoBinds?'var(--alerte)':'var(--vert-t)'}"><i>Limite retenue</i><b>${hm(eff)}</b></div>`+
+    `<div class="tout-sep"></div>`+
+    `<div class="tout-b"><i>Récupération / vacation</i><b style="font-size:16px">${r.recupTxt}</b></div>`+
+    `<div class="tout-note">${thermoBinds
+      ? `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, <b>la contrainte thermique commande</b> : la vacation ne doit pas dépasser ${hm(tCap)}, bien avant le plafond de 2 h 30.`
+      : `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, c'est le <b>plafond réglementaire de 2 h 30</b> qui s'applique le premier.`}`+
+    `${tempSel===35 ? ` <b style="color:var(--orange-t)">Anomalie du document officiel :</b> la valeur à 35 °C (${r.mod} min en modéré) est inférieure à celle de 40 °C. Reportée telle quelle.` : ``}`;
+}
+
+/* ---- carte 4 : frise interactive ---- */
+const VAC_MIN=10;                 // durée plancher d'une vacation quand on tire la poignée
+function buildTimeline(){
+  const {seq,end}=buildDay();
+  const span=Math.max(end-startMin,60);
+  const frise=$("frise"); frise.innerHTML="";
+  const eff=effCap();
+
+  seq.forEach((blk,bi)=>{
+    const el=document.createElement("div");
+    const left=(blk.start-startMin)/span*100, width=blk.dur/span*100;
+    el.style.left=left+"%"; el.style.width=width+"%";
+    const slim=width<7;
+    if(blk.type==="vac"){
+      const over=blk.dur>eff;
+      el.className="blk vac"+(over?" over":"")+(slim?" tooslim":"");
+      if(!over) el.style.background=segColor(pic);
+      el.innerHTML=`<b>V${blk.vi+1}</b><s>${hm(blk.dur)}</s>`+
+        `<div class="grip" data-vi="${blk.vi}" role="separator" aria-label="Ajuster la vacation ${blk.vi+1}"></div>`;
+      // drag
+      const grip=el.querySelector(".grip");
+      const start=(clientX)=>{
+        const rect=frise.getBoundingClientRect();
+        const minPerPx=span/rect.width;
+        const orig=vacs[blk.vi], ox=clientX;
+        const move=(x)=>{ vacs[blk.vi]=Math.max(VAC_MIN, Math.round((orig+(x-ox)*minPerPx)/5)*5); render(); };
+        const mm=e=>move((e.touches?e.touches[0]:e).clientX);
+        const up=()=>{document.removeEventListener("mousemove",mm);document.removeEventListener("mouseup",up);
+          document.removeEventListener("touchmove",mm);document.removeEventListener("touchend",up)};
+        document.addEventListener("mousemove",mm);document.addEventListener("mouseup",up);
+        document.addEventListener("touchmove",mm,{passive:false});document.addEventListener("touchend",up);
+      };
+      grip.addEventListener("mousedown",e=>{e.preventDefault();start(e.clientX)});
+      grip.addEventListener("touchstart",e=>{e.preventDefault();start(e.touches[0].clientX)},{passive:false});
+    } else {
+      const cls={hab:"hab",desh:"desh",pause:"pause",lunch:"lunch"}[blk.type];
+      el.className="blk "+cls;
+      el.innerHTML=slim?`<b>${blk.label[0]}</b>`:`<b>${blk.label}</b><s>${hm(blk.dur)}</s>`;
+      el.title=`${blk.label} — ${hm(blk.dur)}`;
+    }
+    frise.appendChild(el);
+  });
+
+  // axe horaire
+  const axis=$("axis"); axis.innerHTML="";
+  const step = span<=300?60:120;
+  for(let m=Math.ceil(startMin/step)*step; m<=end; m+=step){
+    const s=document.createElement("span");
+    s.style.left=((m-startMin)/span*100)+"%";
+    s.innerHTML=`<i></i>${hhmm(m)}`;
+    axis.appendChild(s);
+  }
+
+  // liste éditable des vacations
+  const list=$("vlist"); list.innerHTML="";
+  vacs.forEach((t,vi)=>{
+    const over=t>eff;
+    const b=buildDay().seq.find(x=>x.type==="vac"&&x.vi===vi);
+    const row=document.createElement("div"); row.className="vrow";
+    row.innerHTML=
+      `<span class="vdot" style="background:${over?'var(--alerte)':segColor(pic)}"></span>`+
+      `<span class="vname">Vacation ${vi+1}</span>`+
+      `<span class="vrange">${hhmm(b.start)} – ${hhmm(b.start+t)}</span>`+
+      `<div class="vdur">`+
+        `<span class="badge ${over?'bad':'good'}">${over?`+${hm(t-eff)} au-dessus`:'conforme'}</span>`+
+        `<input type="number" class="num" min="${VAC_MIN}" step="5" value="${t}" aria-label="Durée vacation ${vi+1}">`+
+        `<span style="font-size:12px;color:var(--gris-t)">min / ${hm(eff)}</span>`+
+        `<button class="del" aria-label="Supprimer la vacation ${vi+1}">×</button>`+
+      `</div>`;
+    row.querySelector("input").addEventListener("input",e=>{vacs[vi]=Math.max(0,+e.target.value||0); render()});
+    row.querySelector(".del").addEventListener("click",()=>{
+      if(vacs.length<=1) return;
+      vacs.splice(vi,1); if(lunchAfter>vacs.length) lunchAfter=vacs.length; render();
     });
-    d.querySelector(".vac-h .del").addEventListener("click",()=>{vacs.splice(vi,1); buildVacs(); compute()});
-    d.querySelector(".vac-b .btn").addEventListener("click",()=>{
-      v.phases.push({n:"",c:0,t:0}); buildVacs(); compute();
-      const ins=box.querySelectorAll(".vac")[vi].querySelectorAll('input[type=text]');
-      ins[ins.length-1].focus();
-    });
-    box.appendChild(d);
+    list.appendChild(row);
   });
 }
+
+// contrôles de tête
+$("startH").addEventListener("input",e=>{const[h,m]=e.target.value.split(":").map(Number); if(!isNaN(h)){startMin=h*60+(m||0); render()}});
+$("habT").addEventListener("input",e=>{habT=Math.max(0,+e.target.value||0); render()});
+$("deshT").addEventListener("input",e=>{deshT=Math.max(0,+e.target.value||0); render()});
+$("lunchT").addEventListener("input",e=>{lunchT=Math.max(0,+e.target.value||0); render()});
 $("addVac").addEventListener("click",()=>{
-  vacs.push({phases:[{n:"Habillage et entrée en zone",c:5,t:15},{n:"Travail en zone",c:pic,t:90},{n:"Décontamination et sortie",c:5,t:20}]});
-  buildVacs(); compute();
+  vacs.push(Math.min(effCap(),90));
+  render();
 });
 $("print").addEventListener("click",()=>{stamp(); window.print()});
 
 /* ---- calcul ---- */
 function compute(){
   const B=bandeDe(pic), E=EPI.find(e=>e.id===sel), st=B?B.c[sel]:null;
-  const ps=allPhases();
-  const totalT=ps.reduce((s,p)=>s+p.t,0);
-  const zoneT=vacs.reduce((s,v)=>s+vacT(v),0);
-  const camb=ps.reduce((s,p)=>s+p.c*p.t,0)/480;
-  const picPh=ps.reduce((m,p)=>Math.max(m,p.c),0);
+  const zoneT=zoneTotal();
+  const camb=pic*zoneT/480;          // toutes les vacations sont à la concentration du processus
   const fpa=E.fpa, cinh=fpa?camb/fpa:null;
+  const {end}=buildDay();
 
-  /* piste groupée par vacation */
-  const tr=$("track"); tr.innerHTML=""; const base=Math.max(480,totalT);
-  vacs.forEach((v,vi)=>{
-    const t=vacT(v); if(!t) return;
-    const g=document.createElement("div"); g.className="vgrp"; g.style.width=(t/base*100)+"%";
-    g.innerHTML=`<span class="vtag">V${vi+1}</span>`;
-    v.phases.forEach(p=>{
-      if(!p.t) return;
-      const d=document.createElement("div"); d.className="seg";
-      d.style.width=(p.t/t*100)+"%"; d.style.background=segColor(p.c);
-      d.title=`Vacation ${vi+1} — ${p.n||"Phase"} — ${p.c} f/L pendant ${p.t} min`;
-      d.innerHTML=`<span>${p.t>=45?p.c+" f/L":""}</span>`;
-      g.appendChild(d);
-    });
-    tr.appendChild(g);
-  });
-  if(totalT<480){
-    const d=document.createElement("div"); d.className="seg rest";
-    d.style.width=((480-totalT)/base*100)+"%";
-    d.innerHTML=`<span>${480-totalT>=40?"hors zone":""}</span>`;
-    tr.appendChild(d);
-  }
-  $("dayState").textContent=`${zoneT} min en zone sur 480 · ${vacs.length} vacation${vacs.length>1?"s":""}`;
-
-  const cm=$("capMark");
-  if(st&&st.cap){cm.style.display="block"; cm.style.left=(st.cap/base*100)+"%";
-    cm.querySelector("b").textContent=`plafond ${hm(st.cap)}`} else cm.style.display="none";
+  $("dayState").textContent=`${hm(zoneT)} en zone · ${vacs.length} vacation${vacs.length>1?"s":""} · fin ${hhmm(end)}`;
 
   $("rZone").textContent=zoneT?hm(zoneT):"—";
   $("rNvac").textContent=`${vacs.length} vacation${vacs.length>1?"s":""}`;
@@ -630,10 +788,14 @@ function compute(){
   }
 
   /* vacations */
-  const longues=vacs.map((v,i)=>({i:i+1,t:vacT(v)})).filter(o=>o.t>VAC_MAX);
+  const eff=effCap(), thermoBinds=thermoCap()<VAC_MAX;
+  const longues=vacs.map((t,i)=>({i:i+1,t})).filter(o=>o.t>eff);
   if(longues.length){bloque=true;
+    const motif = thermoBinds
+      ? `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, la durée d'une vacation est limitée à ${hm(eff)} par les contraintes thermiques (doc INRS/OPPBTP), en deçà du plafond réglementaire de 2 h 30.`
+      : `La durée d'une vacation ne peut excéder 2 h 30 (art. R.4412-119).`;
     put("bad","Vacation trop longue",
-      `${longues.map(o=>`Vacation ${o.i} : ${hm(o.t)}`).join(" · ")}. La durée d'une vacation ne peut excéder 2 h 30 (art. R.4412-119). Découpez en vacations supplémentaires — l'habillage et la décontamination comptent dans chacune.`);
+      `${longues.map(o=>`Vacation ${o.i} : ${hm(o.t)}`).join(" · ")}. ${motif} Tirez la poignée pour raccourcir, ou ajoutez une vacation — un temps de récupération de ${thermoRow().recupTxt} s'intercale automatiquement entre elles.`);
   }
   if(zoneT>JOUR_MAX){bloque=true;
     put("bad","Durée quotidienne dépassée",`${hm(zoneT)} en zone pour un plafond de 6 h par jour (art. R.4412-119). Reportez une partie de l'intervention sur un autre jour.`);
@@ -641,15 +803,7 @@ function compute(){
     put("warn","Journée proche du plafond",`${hm(zoneT)} en zone pour un maximum de 6 h. Il reste ${hm(JOUR_MAX-zoneT)} de marge : tout imprévu fait basculer la journée en non-conformité.`);
   }
 
-  let incoh=false;
-  if(B&&picPh>0&&(picPh<B.min||picPh>=B.max)){
-    incoh=true; bloque=true;
-    const nb=bandeDe(picPh);
-    put("bad","Journée incohérente avec le processus",
-      nb?`Le pic des phases (${fr(picPh,0)} f/L) relève de la bande ${nb.lib} f/L, pas de la bande ${B.lib} f/L déclarée en carte 2. Tant que les deux divergent, le calcul d'exposition ne veut rien dire : alignez la carte 2 sur le pic réel, ou corrigez la phase concernée.`
-        :`Le pic des phases (${fr(picPh,0)} f/L) sort du champ de la sous-section 4.`);
-  }
-  if(totalT>480) put("warn","Journée incohérente",`${totalT} min saisies pour une journée de référence de 480 min.`);
+  const incoh=false;
 
   const manquants=idState();
   if(manquants) put("warn","Fiche non opposable",
@@ -674,7 +828,7 @@ function compute(){
   stamp();
 }
 
-function render(){buildBand(); buildMatrix(); buildVacs(); compute()}
+function render(){buildBand(); buildMatrix(); buildThermo(); buildTimeline(); compute()}
 $("fDate").valueAsDate=new Date();
 render();
 </script>
