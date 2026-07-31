@@ -118,7 +118,10 @@
   .c-ok{background:var(--vert-l);color:var(--vert-t)} .c-cond{background:var(--orange-l);color:var(--orange-t)}
   .c-non{background:var(--alerte-l);color:var(--alerte-t)} .c-int{background:#F0F0F0;color:var(--alerte)}
   .c-np{background:#F0F0F0;color:var(--gris-t);font-weight:500}
-  tr.active .cell.sel{border-color:var(--encre)}
+  tr.active .cell.sel{border-color:var(--encre);box-shadow:0 0 0 2px rgba(0,0,0,.08)}
+  tr.active .cell.sel.c-ok{border-color:var(--vert)}
+  tr.active .cell.sel.c-cond{border-color:var(--orange)}
+  tr.active .cell.sel.c-non,tr.active .cell.sel.c-int{border-color:var(--alerte)}
   .mlegend{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;font-size:11.5px;font-weight:600}
   .mlegend span{padding:4px 10px;border-radius:20px}
 
@@ -134,6 +137,9 @@
   .chip:hover{border-color:var(--rouge)}
   .chip.on{background:var(--rouge);border-color:var(--rouge);color:#fff}
   .chip:focus-visible{outline:2px solid var(--encre);outline-offset:2px}
+  .chips-lg{gap:10px}
+  .chips-lg .chip{font-size:15px;padding:12px 20px;text-align:center;min-width:130px}
+  .chips-lg .chip small{font-size:11px;margin-top:3px}
   .thermo-out{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid var(--trait)}
   .tout-b{display:flex;flex-direction:column;gap:2px}
   .tout-b i{font-style:normal;font-size:11px;font-weight:600;color:var(--gris-t);text-transform:uppercase;letter-spacing:.05em}
@@ -230,21 +236,36 @@
 
   .stamp{font-size:12px;color:var(--gris-t);margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait)}
   footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--trait);font-size:11.5px;color:var(--gris-t);line-height:1.8}
-  .printonly{display:none}
 
-  @page{size:A4 portrait;margin:11mm}
+  /* ---- fiche imprimable une page ---- */
+  #printsheet{display:none}
+  @page{size:A4 portrait;margin:12mm}
   @media print{
-    body{background:#fff;font-size:11.5px}
-    .band{margin:0 0 10px;padding:12px}
-    .band p{display:none}
-    .btnrow,.del,input[type=range],.card-h .hint{display:none!important}
-    .printonly{display:block}
-    .card{break-inside:avoid;border-color:#BBB}
-    .vrow,.kpi{break-inside:avoid}
-    details{break-inside:avoid} details:not([open]) .def-body{display:none}
-    tr:not(.active) .cell{opacity:.5}
-    input{border-color:#CCC!important;box-shadow:none!important}
-    .bandbtn:hover{transform:none}
+    body{background:#fff}
+    /* on masque toute l'application, on n'imprime que la fiche de synthèse */
+    body>.band, body>.page{display:none!important}
+    #printsheet{display:block;font-family:inherit;color:#111;font-size:11px;line-height:1.35}
+    #printsheet .ph{background:var(--rouge);color:#fff;padding:10px 14px;border-radius:4px;margin-bottom:10px}
+    #printsheet .ph .k{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+    #printsheet .ph h1{margin:3px 0 0;font-size:16px;font-weight:800}
+    #printsheet .verdict{padding:9px 14px;border-radius:4px;font-size:13px;font-weight:800;color:#fff;margin-bottom:10px}
+    #printsheet .verdict.pass{background:var(--vert)} #printsheet .verdict.fail{background:var(--alerte)}
+    #printsheet section{border:1px solid #BBB;border-radius:4px;padding:9px 12px;margin-bottom:9px;break-inside:avoid}
+    #printsheet h2{margin:0 0 7px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rouge);border-bottom:1px solid #E0E0E0;padding-bottom:4px}
+    #printsheet .kv{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px}
+    #printsheet .kv div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted #E5E5E5;padding:2px 0}
+    #printsheet .kv b{font-weight:700;text-align:right}
+    #printsheet .kv .full{grid-column:1 / -1}
+    #printsheet .big{display:flex;gap:20px;align-items:baseline;margin-top:5px}
+    #printsheet .big .n{font-size:22px;font-weight:800}
+    #printsheet .big small{font-size:10px;color:#555}
+    #printsheet table{width:100%;border-collapse:collapse;margin-top:4px}
+    #printsheet th,#printsheet td{border:1px solid #DADADA;padding:4px 7px;text-align:left;font-size:10.5px}
+    #printsheet th{background:#F3F3F3;font-weight:700}
+    #printsheet td.n{text-align:right;font-variant-numeric:tabular-nums}
+    #printsheet .foot{font-size:9px;color:#666;margin-top:8px;line-height:1.5}
+    #printsheet .sign{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:14px}
+    #printsheet .sign div{border-top:1px solid #999;padding-top:4px;font-size:9.5px;color:#555}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -261,8 +282,17 @@
 <div class="page">
 
   <section class="card">
-    <div class="card-h"><div class="idx">1</div><h2>Identification de la fiche</h2>
-      <div class="hint">Sans référence de mesurage, le calcul n'est pas opposable</div></div>
+    <div class="card-h"><div class="idx">1</div><h2>Type de mesure d'empoussièrement</h2>
+      <div class="hint">D'où vient la concentration utilisée pour le calcul</div></div>
+    <div class="card-b">
+      <div class="chips chips-lg" id="srcChips"></div>
+      <div class="aside" id="srcNote" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">2</div><h2>Identification de la fiche</h2>
+      <div class="hint">Agence, chantier et date rendent la fiche traçable</div></div>
     <div class="card-b">
       <div class="grid4" style="margin-bottom:14px">
         <div class="field"><label for="fAgence">Agence</label><input type="text" id="fAgence" placeholder="ATTILA …"></div>
@@ -271,8 +301,8 @@
         <div class="field"><label for="fProc">Processus</label><input type="text" id="fProc" placeholder="FP01 — …"></div>
       </div>
       <div class="grid4">
-        <div class="field"><label for="fOrg">Organisme accrédité COFRAC</label><input type="text" id="fOrg" placeholder="Nom de l'organisme"></div>
-        <div class="field"><label for="fRap">Référence du rapport de mesurage</label><input type="text" id="fRap" placeholder="N° de rapport"></div>
+        <div class="field"><label for="fOrg" id="lOrg">Organisme accrédité COFRAC</label><input type="text" id="fOrg" placeholder="Nom de l'organisme"></div>
+        <div class="field"><label for="fRap" id="lRap">Référence du rapport / de la fiche</label><input type="text" id="fRap" placeholder="N° de rapport"></div>
         <div class="field"><label for="fRapD">Date du rapport</label><input type="date" id="fRapD"></div>
         <div class="field"><label for="fRed">Rédacteur</label><input type="text" id="fRed" placeholder="Nom et fonction"></div>
       </div>
@@ -281,7 +311,7 @@
   </section>
 
   <section class="card">
-    <div class="card-h"><div class="idx">2</div><h2>Empoussièrement du processus</h2>
+    <div class="card-h"><div class="idx">3</div><h2>Empoussièrement du processus</h2>
       <div class="hint">Valeur issue du rapport de l'organisme accrédité</div></div>
     <div class="card-b">
       <div class="lvlwrap">
@@ -307,8 +337,8 @@
   </section>
 
   <section class="card">
-    <div class="card-h"><div class="idx">3</div><h2>Équipements prescrits par l'arrêté</h2>
-      <div class="hint">Cliquez la case du moyen retenu · FPA modifiables</div></div>
+    <div class="card-h"><div class="idx">4</div><h2>Équipements prescrits par l'arrêté</h2>
+      <div class="hint" id="mxHint"></div></div>
     <div class="card-b">
       <div class="mscroll"><table class="mx"><thead><tr id="mxHead"></tr></thead><tbody id="mxBody"></tbody></table></div>
       <div class="mlegend">
@@ -319,7 +349,7 @@
   </section>
 
   <section class="card">
-    <div class="card-h"><div class="idx">4</div><h2>Planning de la journée</h2>
+    <div class="card-h"><div class="idx">5</div><h2>Planning de la journée</h2>
       <div class="hint" id="dayState">— min en zone</div></div>
     <div class="card-b">
       <div class="thermo">
@@ -349,8 +379,11 @@
       <div class="vlist" id="vlist"></div>
 
       <div class="btnrow">
-        <button class="btn" id="addVac">+ Ajouter une vacation</button>
-        <button class="btn ghost" id="print">Exporter la fiche en PDF</button>
+        <button class="btn" id="opti">Optimiser 6 h</button>
+        <button class="btn ghost sm" id="optiEq" title="Vacations de durée égale">3 × égales</button>
+        <button class="btn ghost sm" id="optiFull" title="Vacations pleines puis reliquat">Pleines + reliquat</button>
+        <span style="flex:1 1 12px"></span>
+        <button class="btn ghost" id="addVac">+ Ajouter une vacation</button>
       </div>
       <div class="aside" style="margin-top:12px">Tirez les poignées pour ajuster la durée de chaque vacation ; les pauses de récupération et le déjeuner se recalent automatiquement. Habillage et déshabillage bornent la journée. La concentration de chaque vacation reprend l'empoussièrement du processus (carte 2).</div>
     </div>
@@ -358,15 +391,18 @@
 
   <div class="grid">
     <section class="card">
-      <div class="card-h"><div class="idx">5</div><h2>Décision</h2><div class="hint">La prescription d'abord</div></div>
+      <div class="card-h"><div class="idx">6</div><h2>Décision</h2><div class="hint">La prescription d'abord</div></div>
       <div class="card-b">
         <div class="gate" id="gate"><span class="dot"></span><span id="gateTxt"></span></div>
         <div id="msgs"></div>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="btn" id="print">Exporter la fiche en PDF</button>
+        </div>
       </div>
     </section>
 
     <section class="card">
-      <div class="card-h"><div class="idx">6</div><h2>Vérification arithmétique</h2><div class="hint">Subordonnée à la prescription</div></div>
+      <div class="card-h"><div class="idx">7</div><h2>Vérification arithmétique</h2><div class="hint">Subordonnée à la prescription</div></div>
       <div class="card-b">
         <div class="kpi">
           <div class="kpi-top">
@@ -381,7 +417,7 @@
             <div class="kpi-name">C ambiante pondérée<small>Avant prise en compte de l'appareil</small></div>
             <div class="kpi-val" id="rAmb">—</div>
           </div>
-          <div class="aside">Temps en zone : <b id="rZone">—</b> réparti en <b id="rNvac">—</b> · Moyen retenu : <b id="rApr">—</b> · FPA : <b id="rFpa">—</b></div>
+          <div class="aside">Travail en zone : <b id="rZone">—</b> (<b id="rNvac">—</b>) · Moyen retenu : <b id="rApr">—</b> · FPA : <b id="rFpa">—</b></div>
         </div>
         <div class="stamp" id="stamp"></div>
       </div>
@@ -408,6 +444,7 @@
           <p>C'est <strong>l'employeur</strong> qui fixe la durée de chaque vacation, leur nombre quotidien et les temps d'habillage et de décontamination, après avis du médecin du travail et du CSE (art. R.4412-118). Ces durées figurent dans le mode opératoire. L'encadrant de chantier les <strong>applique et les trace</strong> : il ne les détermine pas sur site.</p>
           <p><strong>La contrainte thermique peut abaisser cette limite.</strong> Le document INRS/OPPBTP « Durée et nombre de vacations amiante » donne, selon la température de la zone et l'intensité du travail, une durée de vacation qui descend jusqu'à 13 min à 40 °C en travail soutenu — très en deçà des 2 h 30. Ces valeurs sont paramétrées en tête de la carte 4 ; l'outil retient toujours <strong>la plus contraignante des deux limites</strong>, et impose le temps de récupération correspondant entre deux vacations.</p>
           <p>Ces durées thermiques sont données à titre indicatif par le document officiel et doivent être adaptées selon les individus et les chantiers.</p>
+          <p>Source du tableau : <a href="https://www.apst.fr/wp-content/uploads/2025/12/Duree-et-nombre-de-vacations.jpg" target="_blank" rel="noopener" style="color:var(--rouge);font-weight:700">Durée et nombre de vacations — APST / INRS-OPPBTP</a>.</p>
           <p>Conséquence pratique : une journée de 5 h en zone n'est jamais conforme en une seule vacation. Il faut la découper, et le découpage doit être écrit avant le chantier.</p>
         </div>
       </details>
@@ -455,10 +492,15 @@
       </details>
 
       <details>
-        <summary><span class="tag">SOURCE</span> Ce que cette fiche ne fait pas <span class="chev">›</span></summary>
+        <summary><span class="tag">SOURCE</span> D'où vient la concentration <span class="chev">›</span></summary>
         <div class="def-body">
-          <p>Elle ne remplace ni le mesurage ni la stratégie d'échantillonnage, qui relèvent d'un organisme accrédité COFRAC pour les trois volets — stratégie, prélèvement et analyse — au titre de l'arrêté du 14 août 2012 modifié.</p>
-          <p>Les concentrations saisies doivent provenir du rapport final de cet organisme, dont la référence est reportée en carte 1. La fiche est à joindre au mode opératoire et au dossier chantier.</p>
+          <p>Deux familles, à déclarer en carte 1 : soit une <strong>mesure réelle</strong>, soit une <strong>estimation</strong> à partir d'une base reconnue.</p>
+          <ul>
+            <li><strong>Mesurage COFRAC</strong> — valeur du rapport d'un organisme accrédité (stratégie, prélèvement et analyse), au titre de l'arrêté du 14 août 2012 modifié. C'est la référence pour un processus déjà mesuré ; la référence de rapport est alors attendue.</li>
+            <li><strong>Base CARTO</strong> — valeur de référence par situation de travail, issue de la campagne CARTO Amiante (DGT / OPPBTP / INRS). Utile pour estimer l'empoussièrement d'un processus avant la première campagne de mesures.</li>
+            <li><strong>Scol@miante</strong> — estimation via l'outil de l'INRS, complémentaire de CARTO pour préparer le mode opératoire.</li>
+          </ul>
+          <p>Dans les deux derniers cas, la fiche vaut préparation du mode opératoire, pas contrôle du respect de la VLEP : celui-ci suppose un mesurage sur opérateur. La fiche est à joindre au mode opératoire et au dossier chantier.</p>
         </div>
       </details>
 
@@ -467,6 +509,9 @@
 
   <footer id="foot"></footer>
 </div>
+
+<!-- fiche de synthèse imprimable, générée à la volée -->
+<div id="printsheet"></div>
 
 <script>
 const EPI=[
@@ -494,12 +539,12 @@ const VAC_MAX=150, JOUR_MAX=360;
 
 /* Grille température × intensité — doc INRS / OPPBTP «Durée et nombre de vacations amiante»
    vac = durée max de vacation liée aux contraintes thermiques (min) ; recup = temps de récupération entre vacations (min).
-   Valeurs reportées à l'identique du document (dont l'irrégularité à 35 °C, signalée dans l'outil). */
+   Valeurs reportées à l'identique du document INRS/OPPBTP «Durée et nombre de vacations amiante». */
 const THERMO=[
   {t:20, mod:150, sout:90, recup:28, recupTxt:"25 à 30 min"},
   {t:25, mod:130, sout:56, recup:28, recupTxt:"25 à 30 min"},
   {t:30, mod:80,  sout:34, recup:45, recupTxt:"30 min à 1 h"},
-  {t:35, mod:29,  sout:21, recup:60, recupTxt:"1 heure"},
+  {t:35, mod:49,  sout:21, recup:60, recupTxt:"1 heure"},
   {t:40, mod:30,  sout:13, recup:60, recupTxt:"1 heure"}
 ];
 const WORK=[{id:"mod",n:"Modéré",w:"240 W"},{id:"sout",n:"Soutenu",w:"450 W"}];
@@ -507,14 +552,26 @@ let tempSel=20, workSel="mod";
 function thermoRow(){return THERMO.find(r=>r.t===tempSel)||THERMO[0]}
 function thermoCap(){const r=thermoRow(); return workSel==="sout"?r.sout:r.mod}
 
-let pic=45, sel="p3";
+let pic=45, sel="p3", autoSel=true;   // autoSel : la sélection suit l'empoussièrement tant qu'on ne clique pas une case
+
+/* Choisit l'EPI prescrit le plus léger pour une bande donnée :
+   priorité aux "adapté", puis "adapté sous condition", en suivant l'ordre de la matrice
+   (du plus léger au plus lourd). Le FFP3 (id ffp3) est écarté de l'auto-choix : plafonné à
+   15 min/jour, il n'est jamais un équipement de chantier. */
+function bestEpi(B){
+  if(!B) return sel;
+  const light = EPI.filter(e=>e.id!=="ffp3");
+  const pick = st => light.find(e=>B.c[e.id].s===st);
+  const e = pick("ok") || pick("cond") || null;
+  return e ? e.id : sel;
+}
 
 /* Modèle journée-frise :
    - habT / deshT : habillage / déshabillage (min), bornent la journée, hors zone amiante
    - lunchT : pause déjeuner (min), insérée après la vacation lunchAfter (1-based)
    - vacs : durées de travail en zone (min), à la concentration pic ; pauses de récupération intercalées */
-let habT=10, deshT=20, lunchT=60, startMin=8*60, lunchAfter=1;
-let vacs=[105, 95];   // deux vacations par défaut
+let habT=10, deshT=20, lunchT=60, startMin=8*60, lunchAfter=2;
+let vacs=[120, 120, 120];  // 3 × 2 h = 6 h de travail en zone, déjeuner au milieu
 
 const $=id=>document.getElementById(id);
 const fr=(v,d=2)=>v.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -528,14 +585,27 @@ function segColor(c){
   const a=[192,57,43],b=[120,0,0];
   return `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;
 }
+/* Libellé d'une période de travail. Sur le schéma type — deux périodes séparées par le déjeuner —
+   on parle de Matin / Après-midi ; au-delà on retombe sur une numérotation simple. */
+const JOUR_CIBLE=360;   // 6 h de travail en zone, cadre de lecture de la journée
+function periodLabel(i,n){
+  if(n===1) return "Journée";
+  if(n===2) return i===0?"Matin":"Après-midi";
+  return "Période "+(i+1);
+}
+function periodShort(i,n){
+  if(n===1) return "J";
+  if(n===2) return i===0?"AM":"PM";
+  return "P"+(i+1);
+}
 /* Construit la séquence ordonnée des blocs de la journée, avec minute de début absolue */
 function buildDay(){
   const recup=thermoRow().recup;
-  const seq=[]; let cur=startMin;
+  const seq=[]; let cur=startMin; const n=vacs.length;
   const push=(type,label,dur,vi)=>{seq.push({type,label,dur,start:cur,vi}); cur+=dur;};
   if(habT>0) push("hab","Habillage",habT);
   vacs.forEach((t,i)=>{
-    push("vac",`Vacation ${i+1}`,t,i);
+    push("vac",periodLabel(i,n),t,i);
     if(i===lunchAfter-1 && lunchT>0) push("lunch","Pause déjeuner",lunchT);
     else if(i<vacs.length-1) push("pause","Récupération",recup);
   });
@@ -543,17 +613,52 @@ function buildDay(){
   return {seq, end:cur};
 }
 
-/* ---- carte 1 : identification ---- */
+/* ---- carte 1 : type de mesure d'empoussièrement ---- */
+const SOURCES=[
+  {id:"cofrac", n:"Mesurage COFRAC", org:"Organisme accrédité COFRAC", rap:"Référence du rapport de mesurage", need:true,
+   niveau:"mesure", note:"Mesure sur opérateur par un organisme accrédité COFRAC (stratégie, prélèvement et analyse — arrêté du 14 août 2012 modifié). Seule source permettant le contrôle du respect de la VLEP. La référence du rapport est attendue."},
+  {id:"carto",  n:"Base CARTO",      org:"Référence CARTO / OPPBTP",     rap:"Situation de travail CARTO",     need:false,
+   niveau:"estimation", note:"Valeur de référence par situation de travail, campagne CARTO Amiante (DGT / OPPBTP / INRS). Sert à estimer l'empoussièrement d'un processus avant la première campagne de mesures. Ne vaut pas contrôle de la VLEP."},
+  {id:"scol",   n:"Scol@miante",     org:"Base Scol@miante (INRS)",      rap:"Référence de la situation",      need:false,
+   niveau:"estimation", note:"Estimation du niveau d'empoussièrement via l'outil Scol@miante de l'INRS. Complémentaire de CARTO pour préparer le mode opératoire. Ne vaut pas contrôle de la VLEP."}
+];
+let srcSel="cofrac";
 const IDF=["fAgence","fChantier","fDate","fProc","fOrg","fRap","fRapD","fRed"];
-const IDREQ=["fAgence","fChantier","fDate","fOrg","fRap"];
+/* Seuls agence, chantier et date sont toujours requis. L'origine de la donnée et sa référence
+   ne sont exigées que pour un mesurage COFRAC ; en CARTO ou estimation, elles sont facultatives. */
+function reqFields(){
+  const base=["fAgence","fChantier","fDate"];
+  return SOURCES.find(s=>s.id===srcSel).need ? base.concat(["fOrg","fRap"]) : base;
+}
+function buildSrc(){
+  const box=$("srcChips"); box.innerHTML="";
+  SOURCES.forEach(s=>{
+    const b=document.createElement("button");
+    const isMeasure=s.niveau==="mesure";
+    b.className="chip"+(s.id===srcSel?" on":"");
+    b.type="button";
+    b.setAttribute("aria-pressed", s.id===srcSel);
+    b.innerHTML=`${s.n}<small>${isMeasure?"Mesure":"Estimation"}</small>`;
+    b.addEventListener("click",()=>{srcSel=s.id; buildSrc();
+      const src=SOURCES.find(x=>x.id===srcSel);
+      $("lOrg").textContent=src.org; $("lRap").textContent=src.rap;
+      idState(); stamp();
+    });
+    box.appendChild(b);
+  });
+  const src=SOURCES.find(s=>s.id===srcSel);
+  $("srcNote").innerHTML=`<b style="color:${src.niveau==="mesure"?"var(--vert-t)":"var(--orange-t)"}">${src.niveau==="mesure"?"Mesure sur opérateur":"Estimation — pas un contrôle de VLEP"}.</b> ${src.note}`;
+}
 function idState(){
-  const manquants=IDREQ.filter(k=>!$(k).value.trim());
-  IDF.forEach(k=>$(k).classList.toggle("miss", IDREQ.includes(k)&&!$(k).value.trim()));
+  const req=reqFields();
+  const manquants=req.filter(k=>!$(k).value.trim());
+  IDF.forEach(k=>$(k).classList.toggle("miss", req.includes(k)&&!$(k).value.trim()));
   const el=$("idState");
   if(manquants.length){
-    el.innerHTML=`<span style="color:var(--orange-t);font-weight:600">Fiche incomplète — ${manquants.length} champ(s) d'identification manquant(s).</span> Un calcul de VLEP sans agence, chantier, date, organisme accrédité et référence de rapport n'est pas opposable en contrôle.`;
+    el.innerHTML=`<span style="color:var(--orange-t);font-weight:600">Fiche incomplète — ${manquants.length} champ(s) requis.</span> Renseignez au moins l'agence, le chantier et la date pour rendre la fiche traçable.`;
   } else {
-    el.innerHTML=`<span style="color:var(--vert-t);font-weight:600">Fiche identifiée.</span> Elle peut être jointe au mode opératoire et au dossier chantier.`;
+    const src=SOURCES.find(s=>s.id===srcSel);
+    el.innerHTML=`<span style="color:var(--vert-t);font-weight:600">Fiche identifiée.</span> Donnée d'empoussièrement : ${src.n}. La fiche peut être jointe au mode opératoire et au dossier chantier.`;
   }
   return manquants.length;
 }
@@ -563,8 +668,9 @@ function stamp(){
   const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
   const g=(k,d)=>$(k).value.trim()||d;
   const wlbl=workSel==="sout"?"soutenu (450 W)":"modéré (240 W)";
+  const src=SOURCES.find(s=>s.id===srcSel);
   $("stamp").innerHTML=`Fiche éditée le ${now} · Agence ${g("fAgence","—")} · Chantier ${g("fChantier","—")} · Processus ${g("fProc","—")}<br>`+
-    `Rapport de mesurage ${g("fRap","—")} — ${g("fOrg","organisme non renseigné")} · Rédacteur ${g("fRed","—")}<br>`+
+    `Empoussièrement : ${src.n} — ${g("fRap","réf. non renseignée")} — ${g("fOrg","—")} · Rédacteur ${g("fRed","—")}<br>`+
     `Conditions retenues : ${tempSel} °C, travail ${wlbl} · vacation max ${hm(effCap())} · récupération ${thermoRow().recupTxt}`;
   $("foot").innerHTML=`QHSE-CALC-SS4 · v5.0 · Service QHSE — Réseau ATTILA · édité le ${now}<br>`+
     `Matrice EPI de l'arrêté du 7 mars 2013, à jour au 23/07/2026 — à revoir en veille réglementaire · Durées de vacation : doc INRS/OPPBTP «Durée et nombre de vacations amiante» · Niveaux R.4412-98 · VLEP 10 f/L sur 8 h R.4412-100 · Adaptation des durées R.4412-110 · Vacations R.4412-118 et R.4412-119`;
@@ -575,6 +681,7 @@ function picToSlider(v){const B=bandeDe(v); if(!B) return 700; return Math.round
 function sliderToPic(s){const pos=s/100,i=Math.min(6,Math.floor(pos)),f=pos-i,b=BANDES[i]; return Math.round(b.min+f*(b.max-b.min))}
 function buildBand(){
   const B=bandeDe(pic), wrap=$("bands"); wrap.innerHTML="";
+  if(autoSel) sel=bestEpi(B);   // la sélection suit la mesure tant qu'aucune case n'a été cliquée
   BANDES.forEach(b=>{
     const on=!!(B&&b.min===B.min), btn=document.createElement("button");
     btn.className=`bandbtn b${b.niv}${on?" on":""}`; btn.setAttribute("aria-pressed",on);
@@ -611,12 +718,18 @@ function buildMatrix(){
     tr.querySelectorAll(".cell").forEach(btn=>btn.addEventListener("click",()=>{
       const bm=+btn.dataset.b;
       if(!B||bm!==B.min){const nb=BANDES.find(x=>x.min===bm); pic=nb.min===0?45:nb.min; $("pic").value=pic}
-      sel=btn.dataset.e; render();
+      sel=btn.dataset.e; autoSel=false; render();   // choix manuel : la sélection ne suit plus la mesure
     }));
     tb.appendChild(tr);
   });
+  const h=$("mxHint");
+  if(autoSel){
+    h.innerHTML=`Équipement proposé automatiquement selon l'empoussièrement · FPA modifiables`;
+  } else {
+    h.innerHTML=`Choix manuel · <a href="#" id="mxAuto" style="color:var(--rouge);font-weight:700">revenir à la proposition automatique</a>`;
+    const a=$("mxAuto"); if(a) a.addEventListener("click",e=>{e.preventDefault(); autoSel=true; render()});
+  }
 }
-
 /* ---- carte 4 : module thermique ---- */
 function effCap(){ return Math.min(VAC_MAX, thermoCap()); }
 function buildThermo(){
@@ -652,8 +765,7 @@ function buildThermo(){
     `<div class="tout-b"><i>Récupération / vacation</i><b style="font-size:16px">${r.recupTxt}</b></div>`+
     `<div class="tout-note">${thermoBinds
       ? `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, <b>la contrainte thermique commande</b> : la vacation ne doit pas dépasser ${hm(tCap)}, bien avant le plafond de 2 h 30.`
-      : `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, c'est le <b>plafond réglementaire de 2 h 30</b> qui s'applique le premier.`}`+
-    `${tempSel===35 ? ` <b style="color:var(--orange-t)">Anomalie du document officiel :</b> la valeur à 35 °C (${r.mod} min en modéré) est inférieure à celle de 40 °C. Reportée telle quelle.` : ``}`;
+      : `À ${tempSel} °C en travail ${workSel==="sout"?"soutenu":"modéré"}, c'est le <b>plafond réglementaire de 2 h 30</b> qui s'applique le premier.`} <a href="https://www.apst.fr/wp-content/uploads/2025/12/Duree-et-nombre-de-vacations.jpg" target="_blank" rel="noopener" style="color:var(--rouge);font-weight:600;white-space:nowrap">voir le tableau source ↗</a></div>`;
 }
 
 /* ---- carte 4 : frise interactive ---- */
@@ -673,7 +785,7 @@ function buildTimeline(){
       const over=blk.dur>eff;
       el.className="blk vac"+(over?" over":"")+(slim?" tooslim":"");
       if(!over) el.style.background=segColor(pic);
-      el.innerHTML=`<b>V${blk.vi+1}</b><s>${hm(blk.dur)}</s>`+
+      el.innerHTML=`<b>${periodShort(blk.vi,vacs.length)}</b><s>${hm(blk.dur)}</s>`+
         `<div class="grip" data-vi="${blk.vi}" role="separator" aria-label="Ajuster la vacation ${blk.vi+1}"></div>`;
       // drag
       const grip=el.querySelector(".grip");
@@ -717,7 +829,7 @@ function buildTimeline(){
     const row=document.createElement("div"); row.className="vrow";
     row.innerHTML=
       `<span class="vdot" style="background:${over?'var(--alerte)':segColor(pic)}"></span>`+
-      `<span class="vname">Vacation ${vi+1}</span>`+
+      `<span class="vname">${periodLabel(vi,vacs.length)}</span>`+
       `<span class="vrange">${hhmm(b.start)} – ${hhmm(b.start+t)}</span>`+
       `<div class="vdur">`+
         `<span class="badge ${over?'bad':'good'}">${over?`+${hm(t-eff)} au-dessus`:'conforme'}</span>`+
@@ -743,7 +855,108 @@ $("addVac").addEventListener("click",()=>{
   vacs.push(Math.min(effCap(),90));
   render();
 });
-$("print").addEventListener("click",()=>{stamp(); window.print()});
+
+/* Optimisation : atteindre 6 h de travail en zone (JOUR_CIBLE) sans dépasser la limite
+   par vacation (effCap = min du plafond thermique et des 2 h 30). Deux répartitions. */
+function optimiser(mode){
+  const cap=effCap(), cible=JOUR_CIBLE;
+  const nMin=Math.ceil(cible/cap);           // nb minimal de vacations pour tenir 6 h
+  if(mode==="full"){
+    // vacations pleines au plafond, puis une dernière avec le reliquat
+    const arr=[]; let reste=cible;
+    while(reste>cap+0.001){ arr.push(cap); reste-=cap; }
+    if(reste>0.001) arr.push(Math.round(reste));
+    vacs=arr;
+  } else {
+    // durées égales réparties sur le nombre minimal de vacations
+    const each=Math.round(cible/nMin/5)*5;
+    vacs=Array.from({length:nMin},()=>each);
+    // ajustement fin pour retomber pile sur 6 h
+    let diff=cible-vacs.reduce((s,t)=>s+t,0);
+    vacs[vacs.length-1]+=diff;
+  }
+  if(lunchAfter>vacs.length) lunchAfter=Math.ceil(vacs.length/2);
+  else lunchAfter=Math.ceil(vacs.length/2);   // déjeuner au milieu
+  render();
+}
+$("opti").addEventListener("click",()=>optimiser("eq"));
+$("optiEq").addEventListener("click",()=>optimiser("eq"));
+$("optiFull").addEventListener("click",()=>optimiser("full"));
+
+function fillPrint(){
+  const r=window.__res||{}; const g=(k,d="—")=>$(k).value.trim()||d;
+  const src=SOURCES.find(s=>s.id===srcSel);
+  const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
+  const wlbl=workSel==="sout"?"soutenu (450 W)":"modéré (240 W)";
+  const {seq}=buildDay();
+  const vac=r.fpa?`${fr(r.cinh)} f/L`:"non applicable";
+
+  // lignes du déroulé de journée
+  const rows=seq.map(b=>{
+    const lbl={hab:"Habillage",desh:"Déshabillage",pause:"Récupération",lunch:"Pause déjeuner"}[b.type]||b.label;
+    const zone=b.type==="vac"?`${fr(pic,0)} f/L`:"—";
+    return `<tr><td>${hhmm(b.start)} – ${hhmm(b.start+b.dur)}</td><td>${lbl}</td><td class="n">${hm(b.dur)}</td><td class="n">${zone}</td></tr>`;
+  }).join("");
+
+  $("printsheet").innerHTML=`
+    <div class="ph"><div class="k">Réseau ATTILA — Service QHSE · Amiante SS4</div>
+      <h1>Fiche de calcul — Prescription EPI et respect de la VLEP</h1></div>
+
+    <div class="verdict ${r.bloque?'fail':'pass'}">${r.verdict||"—"}</div>
+
+    <section><h2>Identification</h2>
+      <div class="kv">
+        <div><span>Agence</span><b>${g("fAgence")}</b></div>
+        <div><span>Date d'intervention</span><b>${g("fDate")}</b></div>
+        <div><span>Chantier / affaire</span><b>${g("fChantier")}</b></div>
+        <div><span>Processus</span><b>${g("fProc")}</b></div>
+        <div class="full"><span>Origine de la donnée d'empoussièrement</span><b>${src.n} — ${g("fRap","réf. non renseignée")}${g("fOrg","")!=="—"&&g("fOrg","")!==""?" · "+g("fOrg",""):""}</b></div>
+        <div><span>Rédacteur</span><b>${g("fRed")}</b></div>
+        <div><span>Édité le</span><b>${now}</b></div>
+      </div>
+    </section>
+
+    <section><h2>Empoussièrement et équipement</h2>
+      <div class="kv">
+        <div><span>Concentration mesurée</span><b>${fr(pic,0)} f/L</b></div>
+        <div><span>Classement</span><b>${r.B?`Niveau ${r.B.niv} (${r.B.lib} f/L)`:"Hors SS4"}</b></div>
+        <div class="full"><span>Équipement de protection respiratoire retenu</span><b>${r.E?r.E.n:"—"} (FPA ${r.fpa||"n/a"})</b></div>
+        <div class="full"><span>Statut de l'équipement sur la bande</span><b>${r.st?({ok:"Adapté",cond:"Adapté sous condition de durée",non:"Non adapté",int:"Interdit",np:"Non prescrit"})[r.st.s]:"—"}</b></div>
+      </div>
+    </section>
+
+    <section><h2>Conditions de travail et vacations</h2>
+      <div class="kv">
+        <div><span>Température de zone</span><b>${tempSel} °C</b></div>
+        <div><span>Intensité</span><b>${wlbl}</b></div>
+        <div><span>Vacation max retenue</span><b>${hm(effCap())}</b></div>
+        <div><span>Récupération / vacation</span><b>${thermoRow().recupTxt}</b></div>
+        <div><span>Nombre de vacations</span><b>${vacs.length}</b></div>
+        <div><span>Travail en zone / jour</span><b>${hm(r.zoneT||0)} / 6 h</b></div>
+      </div>
+      <table><thead><tr><th>Créneau</th><th>Phase</th><th class="n">Durée</th><th class="n">Empoussièrement</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+    </section>
+
+    <section><h2>Contrôle du respect de la VLEP</h2>
+      <div class="big">
+        <div><small>Exposition inhalée (8 h)</small><br><span class="n">${vac}</span></div>
+        <div><small>Limite réglementaire</small><br><span class="n">10 f/L</span></div>
+        <div><small>C ambiante pondérée</small><br><span class="n">${fr(r.camb||0)} f/L</span></div>
+      </div>
+      <div class="foot">Calcul : Σ(concentration × durée) / 480 min ÷ FPA. ${r.fpa?"":"Tenue étanche ventilée : contrôle par FPA non applicable, la prescription de l'arrêté fait foi."}</div>
+    </section>
+
+    <div class="sign">
+      <div>Établi par — nom, fonction, signature</div>
+      <div>Visa encadrement — nom, signature</div>
+    </div>
+
+    <div class="foot">QHSE-CALC-SS4 · v5.0 · Matrice EPI de l'arrêté du 7 mars 2013 (à jour au 23/07/2026) · Durées de vacation : doc INRS/OPPBTP «Durée et nombre de vacations amiante» (apst.fr/wp-content/uploads/2025/12/Duree-et-nombre-de-vacations.jpg) · R.4412-98 · R.4412-100 · R.4412-110 · R.4412-118 · R.4412-119.
+    ${src.need?"":"Donnée d'empoussièrement non issue d'un mesurage COFRAC : fiche valant préparation du mode opératoire, le contrôle du respect de la VLEP suppose un mesurage sur opérateur."}</div>
+  `;
+}
+$("print").addEventListener("click",()=>{compute(); fillPrint(); window.print()});
 
 /* ---- calcul ---- */
 function compute(){
@@ -753,10 +966,11 @@ function compute(){
   const fpa=E.fpa, cinh=fpa?camb/fpa:null;
   const {end}=buildDay();
 
-  $("dayState").textContent=`${hm(zoneT)} en zone · ${vacs.length} vacation${vacs.length>1?"s":""} · fin ${hhmm(end)}`;
+  const restant=Math.max(0,JOUR_CIBLE-zoneT);
+  $("dayState").textContent=`${hm(zoneT)} de travail en zone sur 6 h${restant>0?` · ${hm(restant)} restant`:` · journée complète`} · fin ${hhmm(end)}`;
 
   $("rZone").textContent=zoneT?hm(zoneT):"—";
-  $("rNvac").textContent=`${vacs.length} vacation${vacs.length>1?"s":""}`;
+  $("rNvac").textContent=`${hm(zoneT)} / 6 h`;
   $("rApr").textContent=E.n;
   $("rFpa").textContent=fpa?fpa:"n/a";
   $("rAmb").innerHTML=fr(camb)+' <small>f/L</small>';
@@ -799,15 +1013,21 @@ function compute(){
   }
   if(zoneT>JOUR_MAX){bloque=true;
     put("bad","Durée quotidienne dépassée",`${hm(zoneT)} en zone pour un plafond de 6 h par jour (art. R.4412-119). Reportez une partie de l'intervention sur un autre jour.`);
-  } else if(zoneT>JOUR_MAX-30 && zoneT<=JOUR_MAX){
-    put("warn","Journée proche du plafond",`${hm(zoneT)} en zone pour un maximum de 6 h. Il reste ${hm(JOUR_MAX-zoneT)} de marge : tout imprévu fait basculer la journée en non-conformité.`);
+  }
+
+  /* plafond atteignable avec le nombre de vacations en place */
+  const eff2=effCap(), maxAtteignable=vacs.length*eff2;
+  if(zoneT<=JOUR_MAX && maxAtteignable<JOUR_MAX && !longues.length){
+    const nNec=Math.ceil(JOUR_MAX/eff2);
+    put("info","Journée de 6 h non atteignable ainsi",
+      `Avec ${vacs.length} vacation${vacs.length>1?"s":""} plafonnée${vacs.length>1?"s":""} à ${hm(eff2)}, le maximum en zone est ${hm(maxAtteignable)}. Atteindre 6 h impose au moins ${nNec} vacations. Le bouton « Optimiser 6 h » construit la journée d'un clic.`);
   }
 
   const incoh=false;
 
   const manquants=idState();
-  if(manquants) put("warn","Fiche non opposable",
-    `${manquants} champ(s) d'identification manquant(s) en carte 1. Le calcul est juste, mais une fiche sans agence, chantier, date, organisme accrédité ni référence de rapport ne vaut rien en contrôle.`);
+  if(manquants) put("warn","Identification incomplète",
+    `${manquants} champ(s) requis en carte 1 (agence, chantier, date). Le calcul est juste, mais la fiche doit être identifiée pour être classée au dossier chantier.`);
 
   if(fpa&&camb>0&&cinh>10&&!bloque) put("warn","Divergence à expliquer",
     "L'arrêté admet cet équipement mais le calcul dépasse 10 f/L. Le FPA saisi est probablement inférieur à celui retenu par l'arrêté : recalez-le sur la notice fabricant avant de conclure.");
@@ -825,11 +1045,15 @@ function compute(){
 
   $("gate").className="gate "+(bloque?"fail":"pass");
   $("gateTxt").textContent=bloque?"Configuration non recevable":"Configuration recevable";
+  window.__res={B,E,st,zoneT,camb,fpa,cinh,end,bloque,
+    verdict:bloque?"Configuration non recevable":"Configuration recevable"};
   stamp();
 }
 
 function render(){buildBand(); buildMatrix(); buildThermo(); buildTimeline(); compute()}
 $("fDate").valueAsDate=new Date();
+buildSrc();
+(function(){const src=SOURCES.find(s=>s.id===srcSel); $("lOrg").textContent=src.org; $("lRap").textContent=src.rap;})();
 render();
 </script>
 </body>
