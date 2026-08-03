@@ -293,8 +293,11 @@
     #printsheet th{background:#F3F3F3;font-weight:700}
     #printsheet td.n{text-align:right;font-variant-numeric:tabular-nums}
     #printsheet .foot{font-size:9px;color:#666;margin-top:8px;line-height:1.5}
-    #printsheet .sign{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:14px}
-    #printsheet .sign div{border-top:1px solid #999;padding-top:4px;font-size:9.5px;color:#555}
+    #printsheet .sign{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+    #printsheet .sign .box{border:1px solid #999;border-radius:4px;padding:8px 10px;min-height:74px;display:flex;flex-direction:column}
+    #printsheet .sign .box .t{font-size:9.5px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.04em}
+    #printsheet .sign .box .nm{font-size:11px;color:#111;margin-top:3px}
+    #printsheet .sign .box .sp{flex:1;display:flex;align-items:flex-end;justify-content:flex-end;font-size:8.5px;color:#999;font-style:italic}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -1070,8 +1073,16 @@ function fillPrint(intervenant){
     </section>
 
     <div class="sign">
-      <div>${intervenant?`Intervenant — ${esc(intervenant)}, signature`:"Intervenant — nom, signature"}</div>
-      <div>Visa encadrement — nom, signature</div>
+      <div class="box">
+        <div class="t">Intervenant — lu et approuvé</div>
+        <div class="nm">${intervenant?esc(intervenant):"Nom : ______________________"}</div>
+        <div class="sp">Date et signature</div>
+      </div>
+      <div class="box">
+        <div class="t">Visa encadrement</div>
+        <div class="nm">Nom : ______________________</div>
+        <div class="sp">Date et signature</div>
+      </div>
     </div>
 
     <div class="foot">QHSE-CALC-SS4 · v5.0 · Matrice EPI de l'arrêté du 7 mars 2013 (à jour au 23/07/2026) · Durées de vacation : doc INRS/OPPBTP «Durée et nombre de vacations amiante» (apst.fr/wp-content/uploads/2025/12/Duree-et-nombre-de-vacations.jpg) · R.4412-98 · R.4412-100 · R.4412-110 · R.4412-118 · R.4412-119.
