@@ -140,6 +140,35 @@
   .chips-lg{gap:10px}
   .chips-lg .chip{font-size:15px;padding:12px 20px;text-align:center;min-width:130px}
   .chips-lg .chip small{font-size:11px;margin-top:3px}
+  select{width:100%;font-family:inherit;font-size:14.5px;color:var(--encre);background:var(--blanc);
+    border:1px solid var(--trait);border-radius:4px;padding:9px 10px;cursor:pointer}
+  select:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 3px var(--rouge-l)}
+  .introw{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+  .introw input{flex:1 1 auto}
+  .introw .del{flex:0 0 auto}
+  .exp-btn{position:relative}
+  /* cases d'activité CARTO — couleur par niveau (vert N1, orange N2), comme la matrice EPI */
+  .carto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  .carto-card{text-align:left;font-family:inherit;cursor:pointer;border:2px solid transparent;
+    border-radius:var(--r);padding:12px 14px;transition:transform .12s,box-shadow .12s;display:flex;flex-direction:column;gap:6px;min-height:104px}
+  .carto-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+  .carto-card:focus-visible{outline:3px solid var(--encre);outline-offset:2px}
+  .carto-card .lib{font-size:13px;font-weight:700;line-height:1.25;flex:1}
+  .carto-card .val{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+    border-top:1px solid rgba(255,255,255,.4);padding-top:6px}
+  .carto-card .val b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+  .carto-card .val small{font-size:11px;opacity:.9}
+  .carto-card .niv{align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.05em;
+    padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.25)}
+  /* niveau 1 → vert */
+  .carto-card.lv1{background:var(--vert);border-color:var(--vert);color:#fff}
+  .carto-card.lv1.on{background:var(--vert-t);border-color:var(--encre)}
+  /* niveau 2 → orange */
+  .carto-card.lv2{background:var(--orange);border-color:var(--orange);color:#fff}
+  .carto-card.lv2.on{background:var(--orange-t);border-color:var(--encre)}
+  /* niveau 3 → rouge (au cas où une activité y tomberait) */
+  .carto-card.lv3{background:var(--alerte);border-color:var(--alerte);color:#fff}
+  .carto-card.lv3.on{background:var(--alerte-t);border-color:var(--encre)}
   .thermo-out{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid var(--trait)}
   .tout-b{display:flex;flex-direction:column;gap:2px}
   .tout-b i{font-style:normal;font-size:11px;font-weight:600;color:var(--gris-t);text-transform:uppercase;letter-spacing:.05em}
@@ -282,31 +311,41 @@
 <div class="page">
 
   <section class="card">
-    <div class="card-h"><div class="idx">1</div><h2>Type de mesure d'empoussièrement</h2>
-      <div class="hint">D'où vient la concentration utilisée pour le calcul</div></div>
-    <div class="card-b">
-      <div class="chips chips-lg" id="srcChips"></div>
-      <div class="aside" id="srcNote" style="margin-top:12px"></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="card-h"><div class="idx">2</div><h2>Identification de la fiche</h2>
+    <div class="card-h"><div class="idx">1</div><h2>Identification de la fiche</h2>
       <div class="hint">Agence, chantier et date rendent la fiche traçable</div></div>
     <div class="card-b">
       <div class="grid4" style="margin-bottom:14px">
         <div class="field"><label for="fAgence">Agence</label><input type="text" id="fAgence" placeholder="ATTILA …"></div>
         <div class="field"><label for="fChantier">Chantier / affaire</label><input type="text" id="fChantier" placeholder="Référence affaire"></div>
         <div class="field"><label for="fDate">Date d'intervention</label><input type="date" id="fDate"></div>
-        <div class="field"><label for="fProc">Processus</label><input type="text" id="fProc" placeholder="FP01 — …"></div>
+        <div class="field"><label for="fRed">Rédacteur de la fiche</label><input type="text" id="fRed" placeholder="Nom et fonction"></div>
       </div>
       <div class="grid4">
-        <div class="field"><label for="fOrg" id="lOrg">Organisme accrédité COFRAC</label><input type="text" id="fOrg" placeholder="Nom de l'organisme"></div>
-        <div class="field"><label for="fRap" id="lRap">Référence du rapport / de la fiche</label><input type="text" id="fRap" placeholder="N° de rapport"></div>
-        <div class="field"><label for="fRapD">Date du rapport</label><input type="date" id="fRapD"></div>
-        <div class="field"><label for="fRed">Rédacteur</label><input type="text" id="fRed" placeholder="Nom et fonction"></div>
+        <div class="field"><label for="fOrg" id="lOrg">Organisme accrédité COFRAC <span style="font-weight:400;color:var(--gris-t)">(facultatif)</span></label><input type="text" id="fOrg" placeholder="Nom de l'organisme"></div>
+        <div class="field"><label for="fRap" id="lRap">Référence du rapport / de la fiche <span style="font-weight:400;color:var(--gris-t)">(facultatif)</span></label><input type="text" id="fRap" placeholder="N° de rapport"></div>
+        <div class="field"><label for="fRapD">Date du rapport <span style="font-weight:400;color:var(--gris-t)">(facultatif)</span></label><input type="date" id="fRapD"></div>
       </div>
-      <div class="aside" id="idState"></div>
+      <div style="margin-top:16px">
+        <label>Intervenants sur le chantier</label>
+        <div id="intList"></div>
+        <button class="btn ghost sm" id="addInt" style="margin-top:8px">+ Ajouter un intervenant</button>
+        <div class="aside" style="margin-top:8px">Chaque intervenant génère sa propre fiche à l'export — une fiche nominative par personne.</div>
+      </div>
+      <div class="aside" id="idState" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><div class="idx">2</div><h2>Type de mesure d'empoussièrement</h2>
+      <div class="hint">D'où vient la concentration utilisée pour le calcul</div></div>
+    <div class="card-b">
+      <div class="chips chips-lg" id="srcChips"></div>
+      <div class="aside" id="srcNote" style="margin-top:12px"></div>
+      <div id="cartoPick" style="display:none;margin-top:16px">
+        <label style="margin-bottom:10px">Activité CARTO — cliquez pour pré-remplir l'empoussièrement</label>
+        <div class="carto-grid" id="cartoGrid"></div>
+        <div class="aside" id="cartoNote" style="margin-top:10px"></div>
+      </div>
     </div>
   </section>
 
@@ -395,9 +434,7 @@
       <div class="card-b">
         <div class="gate" id="gate"><span class="dot"></span><span id="gateTxt"></span></div>
         <div id="msgs"></div>
-        <div class="btnrow" style="margin-top:14px">
-          <button class="btn" id="print">Exporter la fiche en PDF</button>
-        </div>
+        <div class="btnrow" id="exportRow" style="margin-top:14px"></div>
       </div>
     </section>
 
@@ -618,17 +655,28 @@ const SOURCES=[
   {id:"cofrac", n:"Mesurage COFRAC", org:"Organisme accrédité COFRAC", rap:"Référence du rapport de mesurage", need:true,
    niveau:"mesure", note:"Mesure sur opérateur par un organisme accrédité COFRAC (stratégie, prélèvement et analyse — arrêté du 14 août 2012 modifié). Seule source permettant le contrôle du respect de la VLEP. La référence du rapport est attendue."},
   {id:"carto",  n:"Base CARTO",      org:"Référence CARTO / OPPBTP",     rap:"Situation de travail CARTO",     need:false,
-   niveau:"estimation", note:"Valeur de référence par situation de travail, campagne CARTO Amiante (DGT / OPPBTP / INRS). Sert à estimer l'empoussièrement d'un processus avant la première campagne de mesures. Ne vaut pas contrôle de la VLEP."},
+   niveau:"estimation", note:"Valeur de référence par situation de travail, campagne CARTO Amiante (DGT / OPPBTP / INRS). Sert à estimer l'empoussièrement d'un processus avant la première campagne de mesures. Ne vaut pas contrôle de la VLEP.",
+   lien:"https://www.preventionbtp.fr/ressources/documentation/ouvrage/carto-amiante-nouveau-rapport-de-la-campagne-de-mesurage-des-empoussierements-amiante-lors-d-interventions-courantes-du-btp_2HYTX36ojAtZg8kMk88RJ5", lienTxt:"rapport CARTO Amiante — Prévention BTP ↗"},
   {id:"scol",   n:"Scol@miante",     org:"Base Scol@miante (INRS)",      rap:"Référence de la situation",      need:false,
    niveau:"estimation", note:"Estimation du niveau d'empoussièrement via l'outil Scol@miante de l'INRS. Complémentaire de CARTO pour préparer le mode opératoire. Ne vaut pas contrôle de la VLEP."}
 ];
+
+/* Bibliothèque CARTO — valeurs de référence saisies par l'utilisateur.
+   niv déduit par bandeDe() ; le repère niveau 2 sert à encourager une mesure pour repasser en niveau 1. */
+const CARTO=[
+  {lib:"Démontage d'un ouvrant avec mastic amianté — travail humide", c:4.65},
+  {lib:"Démontage d'ardoises en toiture — travail à l'humide",         c:55.4},
+  {lib:"Démontage de plaques fibrociment — travail à l'humide",        c:138},
+  {lib:"Démoussage — travail humide",                                  c:22},
+  {lib:"Perçage d'enduit extérieur avec aspiration à la source",       c:7.3}
+];
 let srcSel="cofrac";
-const IDF=["fAgence","fChantier","fDate","fProc","fOrg","fRap","fRapD","fRed"];
-/* Seuls agence, chantier et date sont toujours requis. L'origine de la donnée et sa référence
-   ne sont exigées que pour un mesurage COFRAC ; en CARTO ou estimation, elles sont facultatives. */
+let intervenants=[""];          // au moins un intervenant ; un export nominatif par personne
+const IDF=["fAgence","fChantier","fDate","fOrg","fRap","fRapD","fRed"];
+/* Seuls agence, chantier et date sont requis. Organisme et référence de rapport restent
+   facultatifs quelle que soit l'origine — utiles pour tracer un mesurage COFRAC, mais jamais bloquants. */
 function reqFields(){
-  const base=["fAgence","fChantier","fDate"];
-  return SOURCES.find(s=>s.id===srcSel).need ? base.concat(["fOrg","fRap"]) : base;
+  return ["fAgence","fChantier","fDate"];
 }
 function buildSrc(){
   const box=$("srcChips"); box.innerHTML="";
@@ -641,13 +689,47 @@ function buildSrc(){
     b.innerHTML=`${s.n}<small>${isMeasure?"Mesure":"Estimation"}</small>`;
     b.addEventListener("click",()=>{srcSel=s.id; buildSrc();
       const src=SOURCES.find(x=>x.id===srcSel);
-      $("lOrg").textContent=src.org; $("lRap").textContent=src.rap;
+      $("lOrg").childNodes[0].nodeValue=src.org+" ";
+      $("lRap").childNodes[0].nodeValue=src.rap+" ";
       idState(); stamp();
     });
     box.appendChild(b);
   });
   const src=SOURCES.find(s=>s.id===srcSel);
-  $("srcNote").innerHTML=`<b style="color:${src.niveau==="mesure"?"var(--vert-t)":"var(--orange-t)"}">${src.niveau==="mesure"?"Mesure sur opérateur":"Estimation — pas un contrôle de VLEP"}.</b> ${src.note}`;
+  let noteHtml=`<b style="color:${src.niveau==="mesure"?"var(--vert-t)":"var(--orange-t)"}">${src.niveau==="mesure"?"Mesure sur opérateur":"Estimation — pas un contrôle de VLEP"}.</b> ${src.note}`;
+  if(src.lien) noteHtml+=` <a href="${src.lien}" target="_blank" rel="noopener" style="color:var(--rouge);font-weight:600;white-space:nowrap">${src.lienTxt}</a>`;
+  $("srcNote").innerHTML=noteHtml;
+  buildCarto();
+}
+
+/* ---- cases d'activité CARTO ---- */
+let cartoSelIdx=-1;   // index de l'activité CARTO sélectionnée
+function buildCarto(){
+  const wrap=$("cartoPick");
+  if(srcSel!=="carto"){ wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  const grid=$("cartoGrid"); grid.innerHTML="";
+  CARTO.forEach((a,i)=>{
+    const B=bandeDe(a.c);
+    const lv=B?B.niv:1;
+    const btn=document.createElement("button");
+    btn.className=`carto-card lv${lv}`+(cartoSelIdx===i?" on":""); btn.type="button";
+    btn.setAttribute("aria-pressed", cartoSelIdx===i);
+    btn.innerHTML=
+      `<span class="niv">Niveau ${B?B.niv:"—"}</span>`+
+      `<span class="lib">${a.lib}</span>`+
+      `<span class="val"><b>${fr(a.c,2)}</b><small>f/L</small></span>`;
+    btn.addEventListener("click",()=>{
+      cartoSelIdx=i; pic=a.c; $("pic").value=pic; autoSel=true; render();
+    });
+    grid.appendChild(btn);
+  });
+  const B=bandeDe(pic);
+  $("cartoNote").innerHTML = (cartoSelIdx>=0 && B)
+    ? (B.niv>=2
+        ? `<b style="color:var(--alerte)">Niveau ${B.niv}.</b> Cette activité ressort en niveau ${B.niv} sur la base CARTO. Fortement recommandé : faire réaliser un <b>mesurage d'empoussièrement</b> sur votre processus réel (travail à l'humide maîtrisé) — il repasse souvent en niveau 1, ce qui allège les EPI et la logistique.`
+        : `<b style="color:var(--vert-t)">Niveau ${B.niv}.</b> Valeur de référence CARTO — à confirmer par un mesurage sur opérateur si vous devez statuer sur le respect de la VLEP.`)
+    : `Cliquez une activité pour reprendre son empoussièrement de référence.`;
 }
 function idState(){
   const req=reqFields();
@@ -664,12 +746,47 @@ function idState(){
 }
 IDF.forEach(k=>$(k).addEventListener("input",()=>{idState(); stamp()}));
 
+/* ---- intervenants + export nominatif ---- */
+function buildInt(){
+  const box=$("intList"); box.innerHTML="";
+  intervenants.forEach((nom,i)=>{
+    const row=document.createElement("div"); row.className="introw";
+    row.innerHTML=`<input type="text" value="${esc(nom)}" placeholder="Nom Prénom de l'intervenant" aria-label="Intervenant ${i+1}">`+
+      (intervenants.length>1?`<button class="del" aria-label="Retirer l'intervenant ${i+1}">×</button>`:"");
+    row.querySelector("input").addEventListener("input",e=>{intervenants[i]=e.target.value; buildExport()});
+    const del=row.querySelector(".del");
+    if(del) del.addEventListener("click",()=>{intervenants.splice(i,1); buildInt(); buildExport()});
+    box.appendChild(row);
+  });
+  buildExport();
+}
+$("addInt").addEventListener("click",()=>{intervenants.push(""); buildInt();
+  const ins=$("intList").querySelectorAll("input"); ins[ins.length-1].focus();
+});
+
+/* un bouton d'export par intervenant nommé ; sinon un export générique */
+function buildExport(){
+  const row=$("exportRow"); if(!row) return; row.innerHTML="";
+  const nommes=intervenants.map(s=>s.trim()).filter(Boolean);
+  if(nommes.length===0){
+    const b=document.createElement("button"); b.className="btn"; b.textContent="Exporter la fiche en PDF";
+    b.addEventListener("click",()=>doExport(null)); row.appendChild(b);
+  } else {
+    nommes.forEach(nom=>{
+      const b=document.createElement("button"); b.className="btn";
+      b.textContent=`Exporter — ${nom}`;
+      b.addEventListener("click",()=>doExport(nom)); row.appendChild(b);
+    });
+  }
+}
+function doExport(nom){ compute(); fillPrint(nom); window.print(); }
+
 function stamp(){
   const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
   const g=(k,d)=>$(k).value.trim()||d;
   const wlbl=workSel==="sout"?"soutenu (450 W)":"modéré (240 W)";
   const src=SOURCES.find(s=>s.id===srcSel);
-  $("stamp").innerHTML=`Fiche éditée le ${now} · Agence ${g("fAgence","—")} · Chantier ${g("fChantier","—")} · Processus ${g("fProc","—")}<br>`+
+  $("stamp").innerHTML=`Fiche éditée le ${now} · Agence ${g("fAgence","—")} · Chantier ${g("fChantier","—")}<br>`+
     `Empoussièrement : ${src.n} — ${g("fRap","réf. non renseignée")} — ${g("fOrg","—")} · Rédacteur ${g("fRed","—")}<br>`+
     `Conditions retenues : ${tempSel} °C, travail ${wlbl} · vacation max ${hm(effCap())} · récupération ${thermoRow().recupTxt}`;
   $("foot").innerHTML=`QHSE-CALC-SS4 · v5.0 · Service QHSE — Réseau ATTILA · édité le ${now}<br>`+
@@ -883,7 +1000,7 @@ $("opti").addEventListener("click",()=>optimiser("eq"));
 $("optiEq").addEventListener("click",()=>optimiser("eq"));
 $("optiFull").addEventListener("click",()=>optimiser("full"));
 
-function fillPrint(){
+function fillPrint(intervenant){
   const r=window.__res||{}; const g=(k,d="—")=>$(k).value.trim()||d;
   const src=SOURCES.find(s=>s.id===srcSel);
   const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
@@ -898,18 +1015,23 @@ function fillPrint(){
     return `<tr><td>${hhmm(b.start)} – ${hhmm(b.start+b.dur)}</td><td>${lbl}</td><td class="n">${hm(b.dur)}</td><td class="n">${zone}</td></tr>`;
   }).join("");
 
+  const intLine = intervenant
+    ? `<div class="full"><span>Intervenant</span><b>${esc(intervenant)}</b></div>`
+    : "";
+
   $("printsheet").innerHTML=`
     <div class="ph"><div class="k">Réseau ATTILA — Service QHSE · Amiante SS4</div>
-      <h1>Fiche de calcul — Prescription EPI et respect de la VLEP</h1></div>
+      <h1>Fiche de calcul — Prescription EPI et respect de la VLEP</h1>
+      ${intervenant?`<div style="margin-top:4px;font-size:12px;font-weight:600">Intervenant : ${esc(intervenant)}</div>`:""}</div>
 
     <div class="verdict ${r.bloque?'fail':'pass'}">${r.verdict||"—"}</div>
 
     <section><h2>Identification</h2>
       <div class="kv">
+        ${intLine}
         <div><span>Agence</span><b>${g("fAgence")}</b></div>
         <div><span>Date d'intervention</span><b>${g("fDate")}</b></div>
         <div><span>Chantier / affaire</span><b>${g("fChantier")}</b></div>
-        <div><span>Processus</span><b>${g("fProc")}</b></div>
         <div class="full"><span>Origine de la donnée d'empoussièrement</span><b>${src.n} — ${g("fRap","réf. non renseignée")}${g("fOrg","")!=="—"&&g("fOrg","")!==""?" · "+g("fOrg",""):""}</b></div>
         <div><span>Rédacteur</span><b>${g("fRed")}</b></div>
         <div><span>Édité le</span><b>${now}</b></div>
@@ -948,7 +1070,7 @@ function fillPrint(){
     </section>
 
     <div class="sign">
-      <div>Établi par — nom, fonction, signature</div>
+      <div>${intervenant?`Intervenant — ${esc(intervenant)}, signature`:"Intervenant — nom, signature"}</div>
       <div>Visa encadrement — nom, signature</div>
     </div>
 
@@ -956,7 +1078,6 @@ function fillPrint(){
     ${src.need?"":"Donnée d'empoussièrement non issue d'un mesurage COFRAC : fiche valant préparation du mode opératoire, le contrôle du respect de la VLEP suppose un mesurage sur opérateur."}</div>
   `;
 }
-$("print").addEventListener("click",()=>{compute(); fillPrint(); window.print()});
 
 /* ---- calcul ---- */
 function compute(){
@@ -1050,10 +1171,11 @@ function compute(){
   stamp();
 }
 
-function render(){buildBand(); buildMatrix(); buildThermo(); buildTimeline(); compute()}
+function render(){buildBand(); buildMatrix(); buildThermo(); buildTimeline(); compute(); if(srcSel==="carto") buildCarto();}
 $("fDate").valueAsDate=new Date();
 buildSrc();
-(function(){const src=SOURCES.find(s=>s.id===srcSel); $("lOrg").textContent=src.org; $("lRap").textContent=src.rap;})();
+buildInt();
+(function(){const src=SOURCES.find(s=>s.id===srcSel); $("lOrg").childNodes[0].nodeValue=src.org+" "; $("lRap").childNodes[0].nodeValue=src.rap+" ";})();
 render();
 </script>
 </body>
