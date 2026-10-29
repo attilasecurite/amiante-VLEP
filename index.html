@@ -126,6 +126,13 @@
   .mlegend span{padding:4px 10px;border-radius:20px}
 
   /* module thermique */
+  .chantier{border:1px solid var(--trait);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;background:var(--rouge-l);
+    display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end}
+  .chantier .ch-left{flex:1 1 360px} .chantier .ch-right{flex:0 0 200px}
+  .duree-in{display:flex;align-items:center;gap:8px}
+  .duree-in input{width:88px}
+  .duree-u{font-size:13px;color:var(--gris-t)}
+  .duree-eq{margin-left:auto;font-size:16px;font-weight:800;color:var(--rouge);font-variant-numeric:tabular-nums}
   .thermo{border:1px solid var(--trait);border-radius:var(--r);padding:14px 16px;margin-bottom:18px;background:#FCFCFC}
   .thermo-in{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px}
   .tf{flex:1 1 300px}
@@ -243,6 +250,14 @@
   .blk.vac.over{background:repeating-linear-gradient(45deg,var(--alerte) 0 8px,#9E0000 8px 16px)!important}
   .blk.pause{background:repeating-linear-gradient(135deg,#EFE7D2 0 7px,#E7DCC0 7px 14px);color:#7A6318}
   .blk.lunch{background:#EAF0E4;color:var(--vert-t)}
+  .blk.extra{background:repeating-linear-gradient(135deg,#DCE6F1 0 7px,#CBDAEC 7px 14px);color:#2A4A6B}
+  .blk.prepa{background:#E7DCF0;color:#4A2E66}
+  .blk.prod{background:#D6EBE0;color:#1F5A42}
+  .frise-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:11.5px;color:var(--gris-t)}
+  .frise-leg span{display:flex;align-items:center;gap:5px}
+  .frise-leg i{width:13px;height:13px;border-radius:3px;display:inline-block}
+  .lg-vac{background:var(--rouge)} .lg-pause{background:#E7DCC0} .lg-lunch{background:#EAF0E4;border:1px solid #CBD9BE}
+  .lg-prepa{background:#E7DCF0} .lg-prod{background:#D6EBE0} .lg-hab{background:#D7DCE3}
   .blk .grip{position:absolute;right:0;top:0;bottom:0;width:12px;cursor:ew-resize;background:rgba(0,0,0,.14)}
   .blk .grip::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     width:2px;height:26px;border-left:2px dotted rgba(255,255,255,.85);border-right:2px dotted rgba(255,255,255,.85);padding-left:2px}
@@ -262,6 +277,10 @@
   .vrow .vdur input{width:74px}
   .vrow .badge{margin:0}
   .vrow .del{margin-left:4px}
+  .prow .pkind{width:auto;min-width:112px;flex:0 0 auto;font-weight:700}
+  .prow .pname{flex:1 1 140px;min-width:120px}
+  .prow .pafter{width:auto;min-width:96px}
+  .prow .vdur input{width:66px}
 
   .stamp{font-size:12px;color:var(--gris-t);margin-top:12px;padding-top:10px;border-top:1px dashed var(--trait)}
   footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--trait);font-size:11.5px;color:var(--gris-t);line-height:1.8}
@@ -394,6 +413,21 @@
     <div class="card-h"><div class="idx">5</div><h2>Planning de la journée</h2>
       <div class="hint" id="dayState">— min en zone</div></div>
     <div class="card-b">
+      <div class="chantier">
+        <div class="ch-left">
+          <label>Durée de travail en zone ce jour</label>
+          <div class="chips" id="dureeChips"></div>
+        </div>
+        <div class="ch-right">
+          <label for="dureeLibre">Durée visée</label>
+          <div class="duree-in">
+            <input type="number" class="num" id="dureeLibre" min="0" max="360" step="15" value="360">
+            <span class="duree-u">min</span>
+            <span class="duree-eq" id="dureeEq">6 h 00</span>
+          </div>
+        </div>
+      </div>
+
       <div class="thermo">
         <div class="thermo-in">
           <div class="tf">
@@ -417,17 +451,28 @@
 
       <div class="frisescroll"><div class="frise" id="frise"></div></div>
       <div class="axis" id="axis"></div>
+      <div class="frise-leg">
+        <span><i class="lg-vac"></i>Vacation (zone amiante)</span>
+        <span><i class="lg-pause"></i>Récupération / pause</span>
+        <span><i class="lg-lunch"></i>Déjeuner</span>
+        <span><i class="lg-prepa"></i>Préparation</span>
+        <span><i class="lg-prod"></i>Hors zone / production</span>
+        <span><i class="lg-hab"></i>Habillage / déshabillage</span>
+      </div>
 
       <div class="vlist" id="vlist"></div>
 
       <div class="btnrow">
-        <button class="btn" id="opti">Optimiser 6 h</button>
-        <button class="btn ghost sm" id="optiEq" title="Vacations de durée égale">3 × égales</button>
+        <button class="btn" id="opti">Caler la journée</button>
+        <button class="btn ghost sm" id="optiEq" title="Vacations de durée égale">Vacations égales</button>
         <button class="btn ghost sm" id="optiFull" title="Vacations pleines puis reliquat">Pleines + reliquat</button>
         <span style="flex:1 1 12px"></span>
-        <button class="btn ghost" id="addVac">+ Ajouter une vacation</button>
+        <button class="btn ghost" id="addVac">+ Vacation</button>
+        <button class="btn ghost" id="addPause">+ Pause</button>
+        <button class="btn ghost" id="addPrepa">+ Préparation</button>
+        <button class="btn ghost" id="addProd">+ Hors zone</button>
       </div>
-      <div class="aside" style="margin-top:12px">Tirez les poignées pour ajuster la durée de chaque vacation ; les pauses de récupération et le déjeuner se recalent automatiquement. Habillage et déshabillage bornent la journée. La concentration de chaque vacation reprend l'empoussièrement du processus (carte 2).</div>
+      <div class="aside" style="margin-top:12px">Choisissez d'abord la durée de travail visée, puis « Caler la journée » construit les vacations. Tirez les poignées pour ajuster. <b>Vacation</b> = travail en zone amiante (compte pour la VLEP). <b>Pause</b>, <b>Préparation</b> et <b>Hors zone</b> (production hors amiante) sont des temps hors exposition : ils allongent la journée mais n'entrent pas dans le calcul VLEP. Habillage et déshabillage bornent la journée.</div>
     </div>
   </section>
 
@@ -612,6 +657,12 @@ function bestEpi(B){
    - vacs : durées de travail en zone (min), à la concentration pic ; pauses de récupération intercalées */
 let habT=10, deshT=20, lunchT=60, startMin=8*60, lunchAfter=2;
 let vacs=[120, 120, 120];  // 3 × 2 h = 6 h de travail en zone, déjeuner au milieu
+let pausesExtra=[];        // blocs libres hors zone : {after:<index vacation 1-based>, dur:<min>, label, kind:"pause"|"prepa"|"prod"}
+const KINDS={
+  pause:{lib:"Pause",   cls:"extra",  def:"Pause"},
+  prepa:{lib:"Préparation", cls:"prepa", def:"Préparation / installation"},
+  prod: {lib:"Production",   cls:"prod",  def:"Travail hors zone amiante"}
+};
 
 const $=id=>document.getElementById(id);
 const fr=(v,d=2)=>v.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -627,7 +678,13 @@ function segColor(c){
 }
 /* Libellé d'une période de travail. Sur le schéma type — deux périodes séparées par le déjeuner —
    on parle de Matin / Après-midi ; au-delà on retombe sur une numérotation simple. */
-const JOUR_CIBLE=360;   // 6 h de travail en zone, cadre de lecture de la journée
+let dureeCible=360;   // durée de travail en zone visée ce jour (min) — modifiable, plafonnée à JOUR_MAX
+const DUREES=[         // presets de durée de chantier
+  {min:90,  lib:"1 h 30", sub:"courte"},
+  {min:180, lib:"3 h",    sub:"demi-journée"},
+  {min:240, lib:"4 h",    sub:""},
+  {min:360, lib:"6 h",    sub:"journée pleine"}
+];
 function periodLabel(i,n){
   if(n===1) return "Journée";
   if(n===2) return i===0?"Matin":"Après-midi";
@@ -642,13 +699,24 @@ function periodShort(i,n){
 function buildDay(){
   const recup=thermoRow().recup;
   const seq=[]; let cur=startMin; const n=vacs.length;
-  const push=(type,label,dur,vi)=>{seq.push({type,label,dur,start:cur,vi}); cur+=dur;};
+  const push=(type,label,dur,vi,pi)=>{seq.push({type,label,dur,start:cur,vi,pi}); cur+=dur;};
   if(habT>0) push("hab","Habillage",habT);
+  // blocs libres avant toute vacation (after=0) : préparation / production en amont
+  pausesExtra.forEach((p,pi)=>{ if(p.after===0 && p.dur>0){
+    const k=KINDS[p.kind||"pause"]; push(k.cls, p.label||k.def, p.dur, null, pi);
+  }});
   vacs.forEach((t,i)=>{
     push("vac",periodLabel(i,n),t,i);
+    // pause structurante entre deux vacations : déjeuner à la position lunchAfter, sinon récupération
     if(i===lunchAfter-1 && lunchT>0) push("lunch","Pause déjeuner",lunchT);
     else if(i<vacs.length-1) push("pause","Récupération",recup);
+    // blocs libres hors zone (pause, préparation, production) rattachés à cette vacation
+    pausesExtra.forEach((p,pi)=>{ if(p.after===i+1 && p.dur>0){
+      const k=KINDS[p.kind||"pause"];
+      push(k.cls, p.label||k.def, p.dur, null, pi);
+    }});
   });
+  // blocs libres placés avant la 1re vacation (after=0) — préparation en début de journée
   if(deshT>0) push("desh","Déshabillage",deshT);
   return {seq, end:cur};
 }
@@ -923,7 +991,7 @@ function buildTimeline(){
       grip.addEventListener("mousedown",e=>{e.preventDefault();start(e.clientX)});
       grip.addEventListener("touchstart",e=>{e.preventDefault();start(e.touches[0].clientX)},{passive:false});
     } else {
-      const cls={hab:"hab",desh:"desh",pause:"pause",lunch:"lunch"}[blk.type];
+      const cls={hab:"hab",desh:"desh",pause:"pause",lunch:"lunch",extra:"extra",prepa:"prepa",prod:"prod"}[blk.type];
       el.className="blk "+cls;
       el.innerHTML=slim?`<b>${blk.label[0]}</b>`:`<b>${blk.label}</b><s>${hm(blk.dur)}</s>`;
       el.title=`${blk.label} — ${hm(blk.dur)}`;
@@ -964,9 +1032,56 @@ function buildTimeline(){
     });
     list.appendChild(row);
   });
+
+  // blocs libres hors zone (pause, préparation, production) ajoutés par l'utilisateur
+  const dotColor={pause:"#9BB4D0",prepa:"#A07CC4",prod:"#5FB58C"};
+  pausesExtra.forEach((p,pi)=>{
+    const kind=p.kind||"pause";
+    const row=document.createElement("div"); row.className="vrow prow";
+    row.innerHTML=
+      `<span class="vdot" style="background:${dotColor[kind]};border-radius:3px"></span>`+
+      `<select class="pkind">${Object.entries(KINDS).map(([k,v])=>`<option value="${k}" ${kind===k?'selected':''}>${v.lib}</option>`).join('')}</select>`+
+      `<input type="text" class="pname" value="${esc(p.label||'')}" placeholder="${KINDS[kind].def}">`+
+      `<div class="vdur">`+
+        `<select class="pafter">`+
+          `<option value="0" ${p.after===0?'selected':''}>avant V1</option>`+
+          `${vacs.map((_,vi)=>`<option value="${vi+1}" ${p.after===vi+1?'selected':''}>après V${vi+1}</option>`).join('')}`+
+        `</select>`+
+        `<input type="number" class="num" min="0" step="5" value="${p.dur}" aria-label="Durée bloc ${pi+1}">`+
+        `<span style="font-size:12px;color:var(--gris-t)">min</span>`+
+        `<button class="del" aria-label="Supprimer le bloc ${pi+1}">×</button>`+
+      `</div>`;
+    row.querySelector(".pkind").addEventListener("change",e=>{p.kind=e.target.value; render()});
+    row.querySelector(".pname").addEventListener("input",e=>{p.label=e.target.value; buildTimeline()});
+    row.querySelector(".pafter").addEventListener("change",e=>{p.after=+e.target.value; render()});
+    row.querySelector(".num").addEventListener("input",e=>{p.dur=Math.max(0,+e.target.value||0); render()});
+    row.querySelector(".del").addEventListener("click",()=>{pausesExtra.splice(pi,1); render()});
+    list.appendChild(row);
+  });
 }
 
+// ---- durée de travail en zone visée ----
+function buildDuree(){
+  const box=$("dureeChips"); box.innerHTML="";
+  DUREES.forEach(d=>{
+    const b=document.createElement("button");
+    b.className="chip"+(dureeCible===d.min?" on":""); b.type="button";
+    b.setAttribute("aria-pressed", dureeCible===d.min);
+    b.innerHTML=`${d.lib}${d.sub?`<small>${d.sub}</small>`:""}`;
+    b.addEventListener("click",()=>{setDuree(d.min)});
+    box.appendChild(b);
+  });
+  $("dureeLibre").value=dureeCible;
+  $("dureeEq").textContent=hm(dureeCible);
+}
+function setDuree(min){
+  dureeCible=Math.max(0,Math.min(JOUR_MAX,Math.round(min)));
+  optimiser(lastOptiMode);   // recale la journée sur la nouvelle durée, même mode de répartition
+}
+let lastOptiMode="eq";
+
 // contrôles de tête
+$("dureeLibre").addEventListener("input",e=>{setDuree(+e.target.value||0)});
 $("startH").addEventListener("input",e=>{const[h,m]=e.target.value.split(":").map(Number); if(!isNaN(h)){startMin=h*60+(m||0); render()}});
 $("habT").addEventListener("input",e=>{habT=Math.max(0,+e.target.value||0); render()});
 $("deshT").addEventListener("input",e=>{deshT=Math.max(0,+e.target.value||0); render()});
@@ -975,31 +1090,37 @@ $("addVac").addEventListener("click",()=>{
   vacs.push(Math.min(effCap(),90));
   render();
 });
+function addBloc(kind,dur){
+  pausesExtra.push({after:Math.max(1,vacs.length-1), dur, label:"", kind});
+  render();
+}
+$("addPause").addEventListener("click",()=>addBloc("pause",15));
+$("addPrepa").addEventListener("click",()=>addBloc("prepa",30));
+$("addProd").addEventListener("click",()=>addBloc("prod",60));
 
-/* Optimisation : atteindre 6 h de travail en zone (JOUR_CIBLE) sans dépasser la limite
-   par vacation (effCap = min du plafond thermique et des 2 h 30). Deux répartitions. */
+/* Optimisation : atteindre la durée visée (dureeCible) sans dépasser la limite par vacation
+   (effCap = min du plafond thermique et des 2 h 30). Deux répartitions. */
 function optimiser(mode){
-  const cap=effCap(), cible=JOUR_CIBLE;
-  const nMin=Math.ceil(cible/cap);           // nb minimal de vacations pour tenir 6 h
+  lastOptiMode=mode;
+  const cap=effCap(), cible=Math.max(5,dureeCible);
+  const nMin=Math.max(1,Math.ceil(cible/cap));   // nb minimal de vacations
   if(mode==="full"){
     // vacations pleines au plafond, puis une dernière avec le reliquat
     const arr=[]; let reste=cible;
     while(reste>cap+0.001){ arr.push(cap); reste-=cap; }
     if(reste>0.001) arr.push(Math.round(reste));
-    vacs=arr;
+    vacs=arr.length?arr:[Math.round(cible)];
   } else {
     // durées égales réparties sur le nombre minimal de vacations
     const each=Math.round(cible/nMin/5)*5;
     vacs=Array.from({length:nMin},()=>each);
-    // ajustement fin pour retomber pile sur 6 h
-    let diff=cible-vacs.reduce((s,t)=>s+t,0);
-    vacs[vacs.length-1]+=diff;
+    vacs[vacs.length-1]+=cible-vacs.reduce((s,t)=>s+t,0);  // ajustement fin
   }
-  if(lunchAfter>vacs.length) lunchAfter=Math.ceil(vacs.length/2);
-  else lunchAfter=Math.ceil(vacs.length/2);   // déjeuner au milieu
+  // déjeuner seulement si au moins 2 vacations ET journée assez longue (> 4 h de travail)
+  lunchAfter = (vacs.length>=2 && cible>240) ? Math.ceil(vacs.length/2) : 0;
   render();
 }
-$("opti").addEventListener("click",()=>optimiser("eq"));
+$("opti").addEventListener("click",()=>optimiser(lastOptiMode));
 $("optiEq").addEventListener("click",()=>optimiser("eq"));
 $("optiFull").addEventListener("click",()=>optimiser("full"));
 
@@ -1057,7 +1178,7 @@ function fillPrint(intervenant){
         <div><span>Vacation max retenue</span><b>${hm(effCap())}</b></div>
         <div><span>Récupération / vacation</span><b>${thermoRow().recupTxt}</b></div>
         <div><span>Nombre de vacations</span><b>${vacs.length}</b></div>
-        <div><span>Travail en zone / jour</span><b>${hm(r.zoneT||0)} / 6 h</b></div>
+        <div><span>Travail en zone / jour</span><b>${hm(r.zoneT||0)} / ${hm(dureeCible)} visé</b></div>
       </div>
       <table><thead><tr><th>Créneau</th><th>Phase</th><th class="n">Durée</th><th class="n">Empoussièrement</th></tr></thead>
         <tbody>${rows}</tbody></table>
@@ -1098,11 +1219,12 @@ function compute(){
   const fpa=E.fpa, cinh=fpa?camb/fpa:null;
   const {end}=buildDay();
 
-  const restant=Math.max(0,JOUR_CIBLE-zoneT);
-  $("dayState").textContent=`${hm(zoneT)} de travail en zone sur 6 h${restant>0?` · ${hm(restant)} restant`:` · journée complète`} · fin ${hhmm(end)}`;
+  const ecart=zoneT-dureeCible;
+  const etatDuree = Math.abs(ecart)<=2 ? `objectif atteint` : (ecart>0 ? `${hm(ecart)} au-dessus de la cible` : `${hm(-ecart)} sous la cible`);
+  $("dayState").textContent=`${hm(zoneT)} de travail en zone / cible ${hm(dureeCible)} · ${etatDuree} · fin ${hhmm(end)}`;
 
   $("rZone").textContent=zoneT?hm(zoneT):"—";
-  $("rNvac").textContent=`${hm(zoneT)} / 6 h`;
+  $("rNvac").textContent=`${hm(zoneT)} / ${hm(dureeCible)} visé`;
   $("rApr").textContent=E.n;
   $("rFpa").textContent=fpa?fpa:"n/a";
   $("rAmb").innerHTML=fr(camb)+' <small>f/L</small>';
@@ -1147,12 +1269,12 @@ function compute(){
     put("bad","Durée quotidienne dépassée",`${hm(zoneT)} en zone pour un plafond de 6 h par jour (art. R.4412-119). Reportez une partie de l'intervention sur un autre jour.`);
   }
 
-  /* plafond atteignable avec le nombre de vacations en place */
+  /* cible atteignable avec le nombre de vacations en place */
   const eff2=effCap(), maxAtteignable=vacs.length*eff2;
-  if(zoneT<=JOUR_MAX && maxAtteignable<JOUR_MAX && !longues.length){
-    const nNec=Math.ceil(JOUR_MAX/eff2);
-    put("info","Journée de 6 h non atteignable ainsi",
-      `Avec ${vacs.length} vacation${vacs.length>1?"s":""} plafonnée${vacs.length>1?"s":""} à ${hm(eff2)}, le maximum en zone est ${hm(maxAtteignable)}. Atteindre 6 h impose au moins ${nNec} vacations. Le bouton « Optimiser 6 h » construit la journée d'un clic.`);
+  if(zoneT<=JOUR_MAX && maxAtteignable<dureeCible-2 && !longues.length){
+    const nNec=Math.ceil(dureeCible/eff2);
+    put("info","Durée visée non atteignable ainsi",
+      `Avec ${vacs.length} vacation${vacs.length>1?"s":""} plafonnée${vacs.length>1?"s":""} à ${hm(eff2)}, le maximum en zone est ${hm(maxAtteignable)}. Atteindre ${hm(dureeCible)} impose au moins ${nNec} vacations. Le bouton « Caler la journée » les construit d'un clic.`);
   }
 
   const incoh=false;
@@ -1182,7 +1304,7 @@ function compute(){
   stamp();
 }
 
-function render(){buildBand(); buildMatrix(); buildThermo(); buildTimeline(); compute(); if(srcSel==="carto") buildCarto();}
+function render(){buildBand(); buildMatrix(); buildThermo(); buildDuree(); buildTimeline(); compute(); if(srcSel==="carto") buildCarto();}
 $("fDate").valueAsDate=new Date();
 buildSrc();
 buildInt();
